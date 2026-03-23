@@ -11,7 +11,9 @@ export default async function Page() {
   `).gte('end_date', today)
 
   console.log('data:', guest_events)
-  console.log('error:', error)
+  if (error) {
+    console.error('error:', error)
+  }
 
  return (
     <div>
@@ -19,7 +21,7 @@ export default async function Page() {
         <div className="grid grid-cols-6 gap-5">
           {guest_events?.map((event, index) => (
             <div key={index}>
-                <Card event={event}/>
+                <Card event={event} index={index}/>
             </div>
           ))}
 

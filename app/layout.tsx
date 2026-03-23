@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/header"
+import Form from "@/components/searchForm/form/form";
+import Script from 'next/script'
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,17 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <header>
-        <Header></Header>
-      </header>
-      <div>
-        
-      </div>
+        <header>
+          <Header></Header>
+        </header>
+        <div>
+          <Form></Form>
+        </div>
         {children}
+        <Script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places`} strategy="afterInteractive"/>
       </body>
     </html>
   );
