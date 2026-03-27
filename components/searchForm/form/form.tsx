@@ -7,14 +7,10 @@ import { useRouter } from 'next/navigation'
 export default function Form() {
   const router = useRouter()
   const [citySlug, setCitySlug] = useState('')
+  const [style, setStyle] = useState(null)
   console.log("ville", citySlug)
 
-  const  handleClick = async (city) => {
-    console.log("ville recue", city)
-    const supabase = createClient()
-    const { data: event_in_db, error } =  await supabase.from('guest_events').select('city_slug').eq('city_slug', city)
-
-    console.log("villedb",event_in_db )
+  const  handleClick = async (city: string) => {
     router.push(`/${city}`)
 
 
@@ -23,6 +19,7 @@ export default function Form() {
   return (
     <div className='flex gap-2'>
       <GooglePlace setCity={setCitySlug}></GooglePlace>
+      <input></input>
       <button onClick={() => handleClick(citySlug)}>rechercher</button>
     </div>
   )

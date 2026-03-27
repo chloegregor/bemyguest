@@ -1,25 +1,14 @@
-import { createClient as createBrowserClient } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/server'
-import Card from "../../components/card/card"
+import { createClient } from '@/lib/supabase/client'
+import Card from "../../components/card/guestCard"
 
 export const revalidate = 120
 
-export async function generateStaticParams() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_KEY!
-  )
-  const {data: cities} = await supabase.from('unique_cities').select()
-
-  return cities?.map((c) => ({city: c.city_slug})) ?? []
-
-}
 
 export default async function City ({ params }: { params: Promise<{ city: string }> }) {
   const {city} = await params
   console.log("city ok", city)
-  const supabase = await createClient()
-  const {data: events} = await supabase.from('guest_events').select('*, users(pseudo, insta, user_style(style_id, styles(name)))')
+  const supabase = createClient()
+  const {data: events} = await supabase.from('shops').select('*, users(pseudo, insta, user_style(style_id, styles(name)))')
   .eq('city_slug', city)
   .order('end_date', { ascending: true })
   console.log("data", events)
@@ -50,14 +39,15 @@ export default async function City ({ params }: { params: Promise<{ city: string
       <div>
         <p>{`resultats pour ${cityName}`}</p>
       </div>
-      <div>
+      <div className="flex">
         <p>Guest à venir</p>
+        <p>Artistes et shops résidants</p>
       </div>
 
       <div className='grid grid-cols-5 gap-10'>
       {futur_events?.map((event, index) => (
         <div key={index}>
-          <Card event={event}/>
+          <Card event={event} />
         </div>
       ))}
       </div>
@@ -67,7 +57,7 @@ export default async function City ({ params }: { params: Promise<{ city: string
       <div className='grid grid-cols-5 gap-10'>
       {past_events?.map((event, index) => (
         <div key={index}>
-          <Card event={event}/>
+          <Card event={event} />
         </div>
       ))}
       </div>

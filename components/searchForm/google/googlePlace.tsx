@@ -1,8 +1,20 @@
 import { useState, useRef } from 'react'
 
-export default function GooglePlace({setCity}) {
+interface GooglePlaceProps {
+  setCity: (city: string) => void
+}
+
+interface PlaceSuggestion {
+  placePrediction: {
+    placeId: string
+    text: { text: string }
+    mainText: { text: string }
+  }
+}
+
+export default function GooglePlace({setCity}: GooglePlaceProps) {
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   console.log('query', query)
   async function fetchSuggestions(input: string) {
@@ -35,7 +47,7 @@ export default function GooglePlace({setCity}) {
         placeholder="Cherche une ville..."
       />
       {suggestions.length > 0 && (
-        <ul className="border absolute bg-white p-2 w-full top-6 z-100">
+        <ul className="border absolute bg-white p-2 w-full top-full z-100">
           {suggestions.map((s) => {
               const label = s.placePrediction.text.text
               const label_slug = s.placePrediction.mainText.text
