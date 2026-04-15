@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 
 interface GooglePlaceProps {
-  setCity: (city: string) => void
+  setCity: (city: string, prediction:any) => void
 }
 
 interface PlaceSuggestion {
@@ -16,7 +16,6 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  console.log('query', query)
   async function fetchSuggestions(input: string) {
     if (input.length < 3) return setSuggestions([])
 
@@ -51,7 +50,8 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
           {suggestions.map((s) => {
               const label = s.placePrediction.text.text
               const label_slug = s.placePrediction.mainText.text
-              console.log('label main', s.placePrediction.mainText.text)
+              const objet = s.placePrediction.placeId
+              console.log('s.placePrediction.mainText.text', label_slug)
             return (
               <li
                 key={s.placePrediction.placeId}
@@ -62,7 +62,7 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
                   .replace(/\s+/g, '-')                    // espaces → tirets
                   .trim()
                   setQuery(label)
-                  setCity(city_slug)
+                  setCity(city_slug, objet)
                   setSuggestions([])
                 }}
               >

@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col p-2 h-screen  `}
       >
         <header>
           <Header></Header>
@@ -38,7 +38,9 @@ export default function RootLayout({
         <div>
           <Form></Form>
         </div>
-        {children}
+        <div className=" flex flex-col border border-amber-500 flex-1">
+          {children}
+        </div>
         <Script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places`} strategy="afterInteractive"/>
       </body>
     </html>

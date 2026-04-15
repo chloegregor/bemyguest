@@ -1,66 +1,183 @@
-import { createClient } from '@/lib/supabase/client'
-import Card from "../../components/card/guestCard"
+import {createClient} from '@/lib/supabase/server'
+import List from '@/components/filter/List'
+import Link from 'next/link'
+import { notFound, } from 'next/navigation'
+import RadiusButton from '@/components/radius/button'
 
 export const revalidate = 120
 
+interface CityType {
+  id: number
+  city_name: string
+  lat:number
+  lng:number
+}
 
-export default async function City ({ params }: { params: Promise<{ city: string }> }) {
-  const {city} = await params
-  console.log("city ok", city)
-  const supabase = createClient()
-  const {data: events} = await supabase.from('shops').select('*, users(pseudo, insta, user_style(style_id, styles(name)))')
-  .eq('city_slug', city)
-  .order('end_date', { ascending: true })
-  console.log("data", events)
+async function getCity(city_slug: string){
+  const supabase = await createClient()
+  const {data: city} = await supabase.from('cities').select('id, city_name, lat, lng').eq('city_slug', city_slug)
+  return {city: city?.[0] || [],}
+}
+
+async function getData(city_id: number){
+  const supabase = await createClient()
+  const [g, s, a] = await Promise.all([
+    supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))').eq('city_id', city_id),
+    supabase.from('shops').select('*, cities(*)').eq('city_id', city_id),
+    supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').eq('city_id', city_id)
+  ] )
+
+  return {
+    guests: g.data || [],
+    shops: s.data || [],
+    artists: a.data || []
+  }
+}
+
+async function getNearByData(city: CityType){
+  const supabase = await createClient()
+
+  // Bounding box
+  const latDelta = 50 / 111
+  const lngDelta = 50 / (111 * Math.cos(city.lat * Math.PI / 180))
+
+  // Villes dans le rayon
+  const { data: nearbyCities } = await supabase
+    .from('cities')
+    .select('id')
+    .gte('lat', city.lat - latDelta)
+    .lte('lat', city.lat + latDelta)
+    .gte('lng', city.lng - lngDelta)
+    .lte('lng', city.lng + lngDelta)
+
+  const cityIds = nearbyCities?.map(c => c.id) || []
+
+  const [g, s, a] = await Promise.all([
+    supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds),
+    supabase.from('shops').select('*, cities(*)').in('city_id', cityIds),
+    supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('city_id', cityIds)
+  ])
+
+  return {
+    guests: g.data || [],
+    shops: s.data || [],
+    artists: a.data || []
+  }
+}
+
+
+export default async function City ({ params, searchParams }: { params: Promise<{ city: string }>, searchParams: Promise<{ radius?: string }>}) {
+  const {city: city_params} = await params
+  const {radius} = await searchParams
+  const city_data = await getCity(city_params)
+  const city_id = city_data.city.id
+  const city_lat = city_data.city.lat
+  const city_lng = city_data.city.lng
+  const data = await getData(city_id)
+  const near_data = radius ? await getNearByData(city_data.city as CityType) : []
+  console.log("neardata", near_data)
   const today = new Date().toISOString().split('T')[0]
-  const futur_events = events?.filter((e) => e.end_date >= today)
-  const past_events = events?.filter((e) => e.end_date < today || !e.end_date)
+  const futur_events = data.guests?.filter((e) => e.end_date >= today)
+  const past_events = data.guests?.filter((e) => e.end_date < today || !e.end_date)
+  const cityname = city_data.city.city_name
+  console.log("cityname", city_data)
 
-  const cityName = events?.[0]?.city_name
 
-  if (!events) {
+  if (!data) {
     return (
       <p>erreur lors du chargement des données</p>
     )
   }
-  if (events.length === 0) {
-    return (
-      <div>
-        <div>
-          <p>Pas de guest à {city} pour le moment </p>
-        </div>
-      </div>
-    )
+
+  if (!cityname){
+    notFound()
   }
 
 
   return (
-    <div>
-      <div>
-        <p>{`resultats pour ${cityName}`}</p>
-      </div>
-      <div className="flex">
-        <p>Guest à venir</p>
-        <p>Artistes et shops résidants</p>
-      </div>
-
-      <div className='grid grid-cols-5 gap-10'>
-      {futur_events?.map((event, index) => (
-        <div key={index}>
-          <Card event={event} />
+    <div className="p-5 flex flex-col gap-5  ">
+      <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
+      <nav>
+          <ul>
+            <div className="flex gap-5">
+              <li><Link href={`/${city_params}`}>Tout</Link></li>
+              <li><Link href={`/${city_params}/guests`}>Guests</Link></li>
+              <li><Link href={`/${city_params}/artists`}>Artistes</Link></li>
+              <li><Link href={`/${city_params}/shops`}>Shops</Link></li>
+            </div>
+          </ul>
+        </nav>
+        <div className='flex flex-col'>
+          <div className=" flex flex-col gap-5">
+            <div className='flex flex-col gap-5'>
+              <div className="flex-1">
+                <h2 className="text-[1.5em]">Les guests à {cityname}</h2>
+                <div className="p-2 ">
+                  {data.guests.length > 10 ?
+                  <div className="flex gap-5  overflow-x-auto">
+                    <List data={data.guests} type={"guests"}/>
+                    <Link className="w-[200px] flex items-center" href={`/${cityname}/guests`}><p className="text-center">Voir plus</p></Link>
+                  </div> : data.guests.length === 0 ?
+                  <div>
+                    <p className="text-[0.8em] text-gray-500">Pas de guest référencé à {cityname} pour le moment.</p>
+                    <Link href={`/${cityname}/nearby/guests`}><p >Voir plus</p>
+                  </Link>
+                  </div> :
+                  <div className="flex gap-5  overflow-x-auto">
+                    <List data={data.guests} type={"guests"}/>
+                    <div className="flex items-center">
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${cityname}/nearby/guests`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+              <div className="flex-1">
+                <h2 className="text-[1.5em]">Artistes à découvrir</h2>
+               {data.artists.length > 10 ?
+                  <div className="flex gap-5 overflow-x-auto">
+                    <List data={data.artists} type={"artists"}/>
+                    <Link className="w-[200px] flex items-center" href={`/${cityname}/guests`}><p className="text-center">Voir plus</p></Link>
+                  </div> : data.artists.length === 0 ?
+                  <div>
+                    <p className="text-[0.8em] text-gray-500">Pas d'artiste référencé à {cityname} pour le moment.</p>
+                    <Link href={`/${cityname}/nearby/artists`}><p >Voir plus</p>
+                  </Link>
+                  </div> :
+                  <div className="flex gap-5  overflow-x-auto">
+                    <List data={data.artists} type={"artists"}/>
+                   <div className="flex items-center">
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${cityname}/nearby/artists`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+            <h2 className="text-[1.5em]">Les shops</h2>
+            <div className="flex gap-5  overflow-x-auto">
+              {data.shops.length > 10 ?
+                  <div className="flex gap-5  overflow-x-auto">
+                    <List data={data.shops} type={"shops"}/>
+                    <Link className="w-[200px] flex items-center" href={`/${cityname}/guests`}><p className="text-center">Voir plus</p></Link>
+                  </div> : data.artists.length === 0 ?
+                  <div>
+                    <p className="text-[0.8em] text-gray-500">Pas de shop référencé à {cityname} pour le moment.</p>
+                    <Link href={`/${cityname}/nearby/shops`}><p >Voir plus</p>
+                  </Link>
+                  </div> :
+                  <div className="flex gap-5 items-center  overflow-x-auto">
+                    <List data={data.shops} type={"shops"}/>
+                    <div className="flex items-center">
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${cityname}/nearby/shops`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                    </div>
+                  </div>
+                }
+            </div>
+          </div>
         </div>
-      ))}
-      </div>
-      <div>
-        <p>Guest passés</p>
-      </div>
-      <div className='grid grid-cols-5 gap-10'>
-      {past_events?.map((event, index) => (
-        <div key={index}>
-          <Card event={event} />
+        <div>
+          <RadiusButton/>
         </div>
-      ))}
       </div>
-    </div>
   )
 }

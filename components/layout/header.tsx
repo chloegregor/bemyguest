@@ -1,11 +1,12 @@
-
+import Link from 'next/link'
 export default function Header() {
   return (
     <div>
       <div>
-        <p className="text-[3em]">
+        <Link href="/"><p className="text-[2em]">
           be my guest
-        </p>
+        </p></Link>
+
       </div>
     </div>
   )
