@@ -23,7 +23,7 @@ export default function GuestCard({event}: { event: Event }) {
         <Link href={`/shop/${shop_slug}`}>
         <p className='text-[0.8em]'>{shop_name}</p>
         </Link>
-        <Link href={`/{city_slug}`}><p className='text-[0.8em]'>{city}</p>
+        <Link href={`/${city_slug}`}><p className='text-[0.8em]'>{city}</p>
         </Link>
       </div>
       <div>

@@ -1,6 +1,7 @@
 import {createClient} from '@/lib/supabase/server'
 import List from '@/components/filter/List'
-import Link from 'next/link'
+import RadiusButton from '@/components/radius/button'
+import NavBar from '@/components/nav/navBar'
 
 
 
@@ -15,28 +16,32 @@ export default async  function Shops( { params }: { params: Promise<{ city: stri
   const city_id = city?.[0]?.id
   const {data:shops} = await supabase.from ('shops').select('*, cities(*)').eq('city_id', city_id).limit(20)
   console.log("data city", city?.[0].lat)
-  const cityName = city?.[0]?.city_name
-  console.log(cityName)
-  const ville = cityName ? cityName : city_params
+  const cityname = city?.[0]?.city_name
+  console.log(cityname)
+  const ville = cityname ? cityname : city_params
 
 
   return (
     <div className="p-5 flex flex-col gap-5  ">
-      <h1 className="text-[2em]">{}</h1>
+      <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
       <nav>
-        <ul>
-          <div className="flex gap-5">
-            <li><Link href={`/${city_params}`}>Tout</Link></li>
-            <li><Link href={`/${city_params}/guests`}>Guests</Link></li>
-            <li><Link href={`/${city_params}/artists`}>Artistes</Link></li>
-            <li><Link href={`/${city_params}/shops`}>Shops</Link></li>
-          </div>
-        </ul>
+        <NavBar city={city_params} isnearby={false}/>
       </nav>
-      <h2>{`Artistes résidents à ${ville}`}</h2>
-      <div className="grid grid-cols-5 gap-5">
-        <List data={shops} type={'shops'}/>
+      {shops?.length > 0 ?
+      <div>
+        <h2>{`Shops à ${ville}`}</h2>
+        <div className="grid grid-cols-5 gap-5">
+          <List data={shops} type={'shops'}/>
+        </div>
       </div>
+      :
+      <div>
+        <p>Pas de shop référencé à {cityname} pour le moment.</p>
+        <RadiusButton city={city_params} category={"shops"}/>
+
+      </div>
+
+    }
     </div>
   )
 }

@@ -37,19 +37,18 @@ async function getData(param: string){
 }
 export default async function Page({searchParams}: PageProps) {
   const {filter} = await searchParams
-
+  console.log("filter", filter)
   const data = await getData(filter as string)
-  console.log("supa data", data)
 
  return (
     <div className="p-5 flex flex-col gap-5  ">
       <nav>
         <ul>
           <div className="flex gap-5">
-            <li><Link href="/?filter=all">Tout</Link></li>
-            <li><Link href="/?filter=guests">Guests</Link></li>
-            <li><Link href="/?filter=artists">Artistes</Link></li>
-            <li><Link href="/?filter=shops">Shops</Link></li>
+            <li><Link className={filter === "all" || !filter ? "underline" : ""} href="/?filter=all">Tout</Link></li>
+            <li><Link className={filter === "guests" ? "underline" : ""} href="/?filter=guests">Guests</Link></li>
+            <li><Link className={filter === "artists" ? "underline" : ""} href="/?filter=artists">Artistes</Link></li>
+            <li><Link className={filter === "shops" ? "underline" : ""} href="/?filter=shops">Shops</Link></li>
           </div>
         </ul>
       </nav>
