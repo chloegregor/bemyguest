@@ -1,5 +1,5 @@
 import {createClient} from '@/lib/supabase/server'
-import List from '@/components/filter/List'
+import List from '@/components/lists/List'
 import Link from 'next/link'
 export const revalidate = 120
 

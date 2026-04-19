@@ -1,5 +1,5 @@
 import {createClient} from '@/lib/supabase/server'
-import List from '@/components/filter/List'
+import List from '@/components/lists/List'
 import Link from 'next/link'
 import NavBar from '@/components/nav/navBar'
 import RadiusButton from '@/components/radius/button'
@@ -57,7 +57,7 @@ export default async function Artists ({ params, searchParams }: { params: Promi
           <h1 className="text-[1.8em]">{`Résultats à proximité de ${cityname}`}</h1>
         </div>
         <div className=''>
-          <RadiusButton />
+          <RadiusButton city={city_params} category={"artists"} />
         </div>
       </div>
       <nav>

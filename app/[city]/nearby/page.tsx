@@ -1,5 +1,5 @@
 import {createClient} from '@/lib/supabase/server'
-import List from '@/components/filter/List'
+import List from '@/components/lists/List'
 import Link from 'next/link'
 import { notFound, } from 'next/navigation'
 import RadiusButton from '@/components/radius/button'
@@ -56,7 +56,6 @@ async function getNearByData(city: CityType, radius: string){
 export default async function City ({ params, searchParams }: { params: Promise<{ city: string }>, searchParams: Promise<{ radius: string }>}) {
   const {city: city_params} = await params
   const {radius} = await searchParams
-
   const city_data = await getCity(city_params)
   const city_id = city_data.city.id
   const city_lat = city_data.city.lat
@@ -86,7 +85,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
           <h1 className="text-[1.8em]">{`Résultats à proximité de ${cityname}`}</h1>
         </div>
         <div className=''>
-          <RadiusButton/>
+          <RadiusButton city={city_params}/>
         </div>
       </div>
       <nav>

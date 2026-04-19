@@ -1,12 +1,18 @@
 import {createClient} from '@/lib/supabase/server'
-import List from '@/components/filter/List'
+import List from '@/components/lists/List'
 import Link from 'next/link'
 import { notFound, } from 'next/navigation'
 import RadiusButton from '@/components/radius/button'
 import NavBar from '@/components/nav/navBar'
-import { Radius } from 'lucide-react'
 
 export const revalidate = 120
+
+interface CityType {
+  id: number
+  city_name: string
+  lat:number
+  lng:number
+}
 
 
 async function getCity(city_slug: string){
@@ -31,12 +37,46 @@ async function getData(city_id: number){
 }
 
 
+async function getNearByData(city: CityType, radius: string){
+  const supabase = await createClient()
 
-export default async function City ({ params }: { params: Promise<{ city: string }>}) {
+  // Bounding box
+  const latDelta = parseInt(radius) / 111
+  const lngDelta = parseInt(radius) / (111 * Math.cos(city.lat * Math.PI / 180))
+
+  // Villes dans le rayon
+  const { data: nearbyCities } = await supabase
+    .from('cities')
+    .select('id')
+    .gte('lat', city.lat - latDelta)
+    .lte('lat', city.lat + latDelta)
+    .gte('lng', city.lng - lngDelta)
+    .lte('lng', city.lng + lngDelta)
+
+  const cityIds = nearbyCities?.map(c => c.id) || []
+
+  const [g, s, a] = await Promise.all([
+    supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds),
+    supabase.from('shops').select('*, cities(*)').in('city_id', cityIds),
+    supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('city_id', cityIds)
+  ])
+
+  return {
+    guests: g.data || [],
+    shops: s.data || [],
+    artists: a.data || []
+  }
+}
+
+
+
+
+export default async function City ({ params, searchParams }: { params: Promise<{ city: string }>, searchParams:Promise<{radius: string}>}) {
   const {city: city_params} = await params
+  const {radius} = await searchParams
   const city_data = await getCity(city_params)
   const city_id = city_data.city.id
-  const data = await getData(city_id)
+  const data = radius ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
   console.log("data", data)
   const today = new Date().toISOString().split('T')[0]
   const futur_events = data.guests?.filter((e) => e.end_date >= today)
@@ -59,22 +99,24 @@ export default async function City ({ params }: { params: Promise<{ city: string
 
 
   return (
-    <div className="p-5 flex flex-col gap-5  ">
-      <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
+    <div className="p-5 flex flex-col gap-5">
+      <div className="flex gap-5">
+        <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
+        <RadiusButton city={city_params}/>
+      </div>
       <nav>
           <NavBar city={city_params} isnearby={false}/>
         </nav>
         {data.artists.length === 0 && data.shops.length === 0 && data.guests.length === 0 ?
           <div>
             <p>Aucun résultat à {cityname} pour le moment.</p>
-            <RadiusButton city={city_params}/>
           </div> :
 
         <div className='flex flex-col'>
           <div className=" flex flex-col gap-5">
             <div className='flex flex-col gap-5'>
               <div className="flex-1">
-                <h2 className="text-[1.5em]">Les guests à {cityname}</h2>
+                <h2 className="text-[1.5em]">Les guests</h2>
                 <div className="p-2 ">
                   {data.guests.length > 10 ?
                   <div className="flex gap-5  overflow-x-auto">

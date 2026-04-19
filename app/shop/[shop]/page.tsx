@@ -1,5 +1,5 @@
 import {createClient} from '@/lib/supabase/server'
-import List from '@/components/filter/List'
+import List from '@/components/lists/List'
 import Image from 'next/image'
 import ArtistCard from '@/components/card/artistShopCard'
 import Link from 'next/link'
@@ -15,9 +15,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const shopName = shop_data?.[0].shop_name
   const city = shop_data?.[0].city_name
   const events = shop_data?.[0].guest_events
-
   const artists = shop_data?.[0].artists
-  console.log("artists", artists)
 
   return (
     <div className="  flex flex-col border border-amber-500 flex-1">
@@ -47,7 +45,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
                   <p>{event.start_date}</p>
                   <p>{event.end_date}</p>
                 </div>
-                <p>{`${event.user_id.pseudo}`}</p>
+                <Link href={`/artist/${event.user_id.pseudo_slug}`}><p>{`${event.user_id.pseudo}`}</p></Link>
 
               </div>
 
