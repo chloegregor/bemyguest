@@ -2,6 +2,7 @@ import {createClient} from '@/lib/supabase/server'
 import List from '@/components/lists/List'
 import RadiusButton from '@/components/radius/button'
 import NavBar from '@/components/nav/navBar'
+import GetMore from '@/components/lists/getMore'
 
 
 interface CityType {
@@ -13,16 +14,26 @@ interface CityType {
 
 
 
-async function getData(city_id: number){
+async function getData(city_id: number, page: number){
+   'use server'
   const supabase = await createClient()
-  const data = await
-    supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))').eq('city_id', city_id)
-  return data
+
+  const limit = 15
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+
+  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))', {count: 'exact'}).eq('city_id', city_id).range(from, to)
+  return {data: data, count:count}
 }
 
 
-async function getNearByData(city: CityType, radius: string){
+async function getNearByData(city: CityType, radius: string, page: number){
+   'use server'
   const supabase = await createClient()
+
+  const limit = 15
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
   const latDelta = parseInt(radius) / 111
   const lngDelta = parseInt(radius) / (111 * Math.cos(city.lat * Math.PI / 180))
@@ -37,9 +48,8 @@ async function getNearByData(city: CityType, radius: string){
 
   const cityIds = nearbyCities?.map(c => c.id) || []
 
-  const data = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds)
-  console.log("data nearby", data)
-  return data
+  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))', {count: 'exact'}).in('city_id', cityIds).range(from, to)
+  return {data: data, count:count}
 }
 
 
@@ -51,7 +61,7 @@ export default async  function Artists( { params, searchParams}: { params: Promi
   const {data: city} = await supabase.from('cities').select('id, city_name, lat, lng').eq('city_slug', city_params)
   const city_id = city[0]?.id
   const cityname = city[0]?.city_name
-  const {data: guests} = radius ? await getNearByData(city[0] as CityType, radius) : await getData(city_id)
+  const {data: guests, count} = radius && radius !="0" ? await getNearByData(city[0] as CityType, radius, 1) : await getData(city_id, 1)
   console.log("data", guests)
   const ville = cityname ? cityname : city_params
 
@@ -60,7 +70,7 @@ export default async  function Artists( { params, searchParams}: { params: Promi
     <div className="p-5 flex flex-col gap-5  ">
       <div className="flex gap-5">
         <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
-        <RadiusButton city={city_params} category={"artists"}/>
+        <RadiusButton city={city_params} category={"guests"}/>
       </div>
       <nav>
         <NavBar city={city_params} isnearby={false}/>
@@ -75,10 +85,9 @@ export default async  function Artists( { params, searchParams}: { params: Promi
         </div> :
         <div>
           <p>Pas de guest référencé à {cityname} pour le moment.</p>
-          <RadiusButton city={city_params} category={"guests"}/>
-
         </div>
       }
+      <GetMore key={radius} category={"guests"} initial_data={guests} total={count} city_id={city_id} radius={radius} city={city} data_function={radius && radius !="0" ? getNearByData: getData}/>
     </div>
   )
 }

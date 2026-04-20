@@ -76,7 +76,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
   const {radius} = await searchParams
   const city_data = await getCity(city_params)
   const city_id = city_data.city.id
-  const data = radius ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
+  const data = radius && radius != "0" ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
   console.log("data", data)
   const today = new Date().toISOString().split('T')[0]
   const futur_events = data.guests?.filter((e) => e.end_date >= today)
@@ -125,13 +125,13 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   </div> : data.guests.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de guest référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${cityname}/nearby/guests?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${cityname}/guests?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.guests} type={"guests"}/>
                     <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/nearby/guests?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/guests?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                   }
@@ -146,13 +146,13 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   </div> : data.artists.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas d'artiste référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${city_params}/nearby/artists?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${city_params}/artists?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.artists} type={"artists"}/>
                    <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/nearby/artists?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/artists?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                 }
@@ -168,13 +168,13 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   : data.shops.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de shop référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${cityname}/nearby/shops?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${cityname}/shops?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5 items-center  overflow-x-auto">
                     <List data={data.shops} type={"shops"}/>
                     <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/nearby/shops?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/shops?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                 }
@@ -182,7 +182,6 @@ export default async function City ({ params, searchParams }: { params: Promise<
           </div>
         </div>
         }
-
       </div>
   )
 }
