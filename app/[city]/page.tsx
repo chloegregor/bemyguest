@@ -105,7 +105,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
         <RadiusButton city={city_params}/>
       </div>
       <nav>
-          <NavBar city={city_params} isnearby={false}/>
+          <NavBar city={city_params} />
         </nav>
         {data.artists.length === 0 && data.shops.length === 0 && data.guests.length === 0 ?
           <div>

@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "../components/layout/header"
 import Form from "@/components/searchForm/form/form";
 import Script from 'next/script'
+import NavBar from '@/components/nav/navBar'
+
 
 
 

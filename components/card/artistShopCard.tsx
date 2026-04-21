@@ -12,11 +12,6 @@ export default function ArtistShopCard({artist}) {
         alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
       </div>
       <div className='flex gap-2'>
-        {styles?.map((style, index)=> (
-          <div key={index} className="rounded-full px-2 py-1 border">
-              <p className='text-[0.7em]'>{style}</p>
-          </div>
-        ))}
       </div>
     </div>
   )

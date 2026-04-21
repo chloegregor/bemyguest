@@ -78,7 +78,7 @@ export default function Form() {
         setCitySlug(slug)
         setPrediction(prediction)
       }}></GooglePlace>
-      <input></input>
+      
       <button onClick={() => handleClick(citySlug, prediction)}>rechercher</button>
     </div>
   )

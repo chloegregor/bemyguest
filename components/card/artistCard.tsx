@@ -17,8 +17,8 @@ export default function ArtistCard({artist}) {
         alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
       </div>
       <div>
-        <Link href={`/${city_slug}`}><p>{city}</p></Link>
-        <Link href={`/shop/${shop_slug}`}><p>{shop_name}</p></Link>
+        <Link href={`/${city_slug}`}><p className="text-[0.8em]">{city}</p></Link>
+        <Link href={`/shop/${shop_slug}`}><p className="text-[0.8em]">{shop_name}</p></Link>
       </div>
       <div>
       </div>

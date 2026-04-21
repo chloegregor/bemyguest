@@ -14,7 +14,7 @@ export default function ShopCard({shop}) {
         alt={`illustration ${shop.shop_name}`} fill className="object-fill"/>
       </div>
       <div>
-        <Link href={`/${city_slug}`}><p>{city_name}</p></Link>
+        <Link href={`/${city_slug}`}><p className="text-[0.8em]">{city_name}</p></Link>
       </div>
       <div>
       </div>

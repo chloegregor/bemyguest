@@ -30,7 +30,7 @@ export default function GetMore({key, category, initial_data, total, city_id, ra
     const nextPage = (page + 1)
     setPage(nextPage)
     console.log("page", nextPage)
-    const {data} = radius && radius != "0" ? await data_function(city, radius, nextPage) : await data_function(city_id, nextPage)
+    const {data} = radius && radius != "0" ? await data_function(nextPage, city, radius, ) : await data_function(nextPage, city_id)
     setDisplayedData(prev => [...prev, ...data])
   }
 
