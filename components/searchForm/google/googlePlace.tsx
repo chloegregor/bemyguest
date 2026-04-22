@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 
 interface GooglePlaceProps {
-  setCity: (city: string, prediction:any) => void
+  setCity: (city: string, placeId:string) => void
+  type: string
 }
 
 interface PlaceSuggestion {
@@ -12,7 +13,7 @@ interface PlaceSuggestion {
   }
 }
 
-export default function GooglePlace({setCity}: GooglePlaceProps) {
+export default function GooglePlace({setCity, type}: GooglePlaceProps) {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -24,7 +25,7 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
     const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
       input,
       includedRegionCodes: ['fr', 'be', 'ch'],
-      includedPrimaryTypes: ['locality']
+      includedPrimaryTypes: ['establishment'],
     })
 
     setSuggestions(suggestions)
@@ -50,10 +51,9 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
           {suggestions.map((s) => {
               const label = s.placePrediction.text.text
               const label_slug = s.placePrediction.mainText.text
-              const objet = s.placePrediction.placeId
-              console.log('s.placePrediction.mainText.text', label_slug)
-            return (
-              <li
+              const placeId = s.placePrediction.placeId
+              return (
+                <li
                 key={s.placePrediction.placeId}
                 onClick={() => {
                   const city_slug = label_slug.toLowerCase()
@@ -62,7 +62,8 @@ export default function GooglePlace({setCity}: GooglePlaceProps) {
                   .replace(/\s+/g, '-')                    // espaces → tirets
                   .trim()
                   setQuery(label)
-                  setCity(city_slug, objet)
+                  setCity(city_slug, placeId)
+                  console.log(s.placePrediction)
                   setSuggestions([])
                 }}
               >

@@ -15,10 +15,10 @@ interface CityType {
 }
 
 
-async function getCity(city_slug: string){
+async function getCity(country: string, city_slug: string){
   const supabase = await createClient()
-  const {data: city} = await supabase.from('cities').select('id, city_name, lat, lng').eq('city_slug', city_slug)
-  return {city: city?.[0] || [],}
+  const {data: city, error} = await supabase.from('cities').select('id, city_name, country_name, lat, lng').eq('country_slug', country).eq('city_slug', city_slug)
+  return {city: city?.[0] || [], error: error}
 }
 
 async function getData(city_id: number){
@@ -71,18 +71,17 @@ async function getNearByData(city: CityType, radius: string){
 
 
 
-export default async function City ({ params, searchParams }: { params: Promise<{ city: string }>, searchParams:Promise<{radius: string}>}) {
-  const {city: city_params} = await params
+export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city: string }>, searchParams:Promise<{radius: string}>}) {
+  const {country, city: city_params} = await params
   const {radius} = await searchParams
-  const city_data = await getCity(city_params)
+  const city_data= await getCity(country, city_params)
   const city_id = city_data.city.id
+  const cityname = city_data.city.city_name
+  const city_country = city_data.city.country_name
   const data = radius && radius != "0" ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
-  console.log("data", data)
   const today = new Date().toISOString().split('T')[0]
   const futur_events = data.guests?.filter((e) => e.end_date >= today)
   const past_events = data.guests?.filter((e) => e.end_date < today || !e.end_date)
-  const cityname = city_data.city.city_name
-  console.log("cityname", city_data)
 
 
   if (!data) {
@@ -101,7 +100,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
   return (
     <div className="p-5 flex flex-col gap-5">
       <div className="flex gap-5">
-        <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
+        <h1 className="text-[2em]">{`Résultats pour ${cityname}, ${city_country}`}</h1>
         <RadiusButton city={city_params}/>
       </div>
       <nav>

@@ -3,7 +3,6 @@ import {createClient} from '@/lib/supabase/client'
 import GooglePlace from "../google/googlePlace"
 import  {useState} from 'react'
 import { useRouter } from 'next/navigation'
-import { errorMonitor } from 'node:events'
 
 type cityForm = {
   city_name: string,
@@ -28,16 +27,13 @@ async function createData(form: cityForm){
 export default function Form() {
   const router = useRouter()
   const [citySlug, setCitySlug] = useState('')
-  const [prediction, setPrediction] = useState('')
-  const [style, setStyle] = useState(null)
+  const [placeId, setPlaceId] = useState('')
   const [loading, setLoading] = useState(false)
-  console.log('prediction', prediction)
 
   const  handleClick = async (city: string, id) => {
     setLoading(true)
     const data = await getData(id)
-    console.log("data handle", data.data)
-    console.log("error", data.error)
+
     if (data.data && data.data.length > 0) {
       setLoading(false)
       router.push(`/${city}`)
@@ -46,7 +42,6 @@ export default function Form() {
       try {
         const res = await fetch(`https://places.googleapis.com/v1/places/${id}?fields=id,displayName,location&key=${process.env.NEXT_PUBLIC_GOOGLE_API}`)
         const place = await res.json()
-        console.log ("lattitude", place.location.latitude)
         const city_name = place.displayName.text
         const lng = place.location.longitude
         const lat = place.location.latitude
@@ -74,12 +69,12 @@ export default function Form() {
 
   return (
     <div className='flex gap-2'>
-      <GooglePlace setCity={(slug: string, prediction: any) => {
+      <GooglePlace setCity={(slug: string, placeId: string) => {
         setCitySlug(slug)
-        setPrediction(prediction)
+        setPlaceId(placeId)
       }}></GooglePlace>
-      
-      <button onClick={() => handleClick(citySlug, prediction)}>rechercher</button>
+
+      <button onClick={() => handleClick(citySlug, placeId)}>rechercher</button>
     </div>
   )
 }
