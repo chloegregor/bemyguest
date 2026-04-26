@@ -10,6 +10,8 @@ export default function GuestCard({event}: { event: Event }) {
   const shop_slug = event.shops.shop_slug
   const city = event.cities?.city_name
   const city_slug = event.cities?.city_slug
+  const country= event.cities?.country_name
+  const country_slug =event.cities?.country_slug
   const artist = event.users
   return(
     <div className="flex flex-col gap-2  h-full w-[200px]">
@@ -23,7 +25,7 @@ export default function GuestCard({event}: { event: Event }) {
         <Link href={`/shop/${shop_slug}`}>
         <p className='text-[0.8em]'>{shop_name}</p>
         </Link>
-        <Link href={`/${city_slug}`}><p className='text-[0.8em]'>{city}</p>
+        <Link href={`/${country_slug}/${city_slug}`}><p className='text-[0.8em]'>{city},{" "}{country}</p>
         </Link>
       </div>
       <div>

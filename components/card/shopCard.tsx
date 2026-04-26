@@ -4,6 +4,8 @@ import Link from 'next/link'
 export default function ShopCard({shop}) {
   const city_name = shop.cities?.city_name
   const city_slug = shop.cities?.city_slug
+  const country_slug = shop.cities?.country_slug
+  const country = shop.cities?.country_name
   return(
     <div className="flex flex-col gap-2 h-full">
       <Link href={`/shop/${shop.shop_slug}`}>
@@ -14,7 +16,7 @@ export default function ShopCard({shop}) {
         alt={`illustration ${shop.shop_name}`} fill className="object-fill"/>
       </div>
       <div>
-        <Link href={`/${city_slug}`}><p className="text-[0.8em]">{city_name}</p></Link>
+        <Link href={`/${country_slug}/${city_slug}`}><p className="text-[0.8em]">{city_name},{" "}{country}</p></Link>
       </div>
       <div>
       </div>

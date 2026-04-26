@@ -5,6 +5,8 @@ export default function ArtistCard({artist}) {
   const styles = artist.user_style?.map((style) => style.styles?.name)
   const city = artist.cities?.city_name
   const city_slug = artist.cities?.city_slug
+  const country = artist.cities?.country_name
+  const country_slug = artist.cities?.country_slug
   const shop_name = artist.shop?.shop_name
   const shop_slug = artist.shop?.shop_slug
   return(
@@ -17,7 +19,7 @@ export default function ArtistCard({artist}) {
         alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
       </div>
       <div>
-        <Link href={`/${city_slug}`}><p className="text-[0.8em]">{city}</p></Link>
+        <Link href={`/${country_slug}/${city_slug}`}><p className="text-[0.8em]">{city},{" "}{country}</p></Link>
         <Link href={`/shop/${shop_slug}`}><p className="text-[0.8em]">{shop_name}</p></Link>
       </div>
       <div>

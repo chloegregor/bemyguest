@@ -71,8 +71,9 @@ async function getNearByData(city: CityType, radius: string){
 
 
 
-export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city: string }>, searchParams:Promise<{radius: string}>}) {
-  const {country, city: city_params} = await params
+export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city_slug: string }>, searchParams:Promise<{radius: string}>}) {
+  const {country, city_slug: city_params} = await params
+
   const {radius} = await searchParams
   const city_data= await getCity(country, city_params)
   const city_id = city_data.city.id
@@ -101,10 +102,10 @@ export default async function City ({ params, searchParams }: { params: Promise<
     <div className="p-5 flex flex-col gap-5">
       <div className="flex gap-5">
         <h1 className="text-[2em]">{`Résultats pour ${cityname}, ${city_country}`}</h1>
-        <RadiusButton city={city_params}/>
+        <RadiusButton country={country} city={city_params}/>
       </div>
       <nav>
-          <NavBar city={city_params} />
+          <NavBar country ={country} city={city_params} />
         </nav>
         {data.artists.length === 0 && data.shops.length === 0 && data.guests.length === 0 ?
           <div>

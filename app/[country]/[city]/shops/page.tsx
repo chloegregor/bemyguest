@@ -56,13 +56,12 @@ async function getNearByData(page: number, city: CityType, radius: string){
 
 
 
-export default async  function Shops( { params, searchParams}: { params: Promise<{ city: string }>, searchParams: Promise<{ radius: string }> }){
+export default async  function Shops( { params, searchParams}: { params: Promise<{ country:string, city: string }>, searchParams: Promise<{ radius: string }> }){
 
-  const {city: city_params} = await params
+  const {country, city: city_params} = await params
   const {radius} = await searchParams
-  console.log("cityinartistspage", city_params)
   const supabase = await createClient()
-  const {data: city} = await supabase.from('cities').select('id, lat, lng, city_name').eq('city_slug', city_params)
+  const {data: city} = await supabase.from('cities').select('id, lat, lng, city_name').eq('country_slug', country).eq('city_slug', city_params)
   const city_id = city?.[0]?.id
   const {data:shops, count} = radius && radius !="0" ? await getNearByData(1, city[0] as CityType, radius) : await getData(1, city_id)
   const cityname = city?.[0]?.city_name
@@ -73,10 +72,10 @@ export default async  function Shops( { params, searchParams}: { params: Promise
     <div className="p-5 flex flex-col gap-5  ">
       <div className='flex gap-5'>
         <h1 className="text-[2em]">{`Résultats pour ${cityname}`}</h1>
-        <RadiusButton city={city_params} category={"shops"}/>
+        <RadiusButton country={country} city={city_params} category={"shops"}/>
       </div>
       <nav>
-        <NavBar city={city_params}/>
+        <NavBar country={country} city={city_params}/>
       </nav>
       {shops?.length > 0 ?
       <div>

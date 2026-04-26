@@ -3,7 +3,7 @@ import {useRouter, usePathname, useSearchParams } from 'next/navigation'
 import {useState} from 'react'
 
 
-export default function RadiusButton({city, category}:{city:string, category?:string}){
+export default function RadiusButton({country, city, category}:{country:string, city:string, category?:string}){
   const router = useRouter()
   const pathname = usePathname()
   console.log(pathname)
@@ -26,7 +26,7 @@ export default function RadiusButton({city, category}:{city:string, category?:st
           step={10}
         />
       </div >
-      <button onClick={() => router.push(`/${city}${section_url}?radius=${searchRadius}`)}  className=' cursor-pointer p-2 rounded-full border border-blue'>étendre la recherche</button>
+      <button onClick={() => router.push(`/${country}/${city}${section_url}?radius=${searchRadius}`)}  className=' cursor-pointer p-2 rounded-full border border-blue'>étendre la recherche</button>
     </div>
   )
 }

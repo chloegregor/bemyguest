@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/header"
-import Form from "@/components/searchForm/form/form";
+import Form from "@/components/searchForm/form/formShopInCreateUser";
 import Script from 'next/script'
-import NavBar from '@/components/nav/navBar'
 
 
 
@@ -38,7 +37,7 @@ export default function RootLayout({
           <Header></Header>
         </header>
         <div>
-          <Form></Form>
+          <Form type={"shop"}></Form>
         </div>
         <div className=" flex flex-col border border-amber-500 flex-1">
           {children}
