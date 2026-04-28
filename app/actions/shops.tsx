@@ -14,8 +14,14 @@ type shopForm = {
 
 export async function getShop(id:string){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').select('*',{count:"exact"}).eq('shop_place_id', id)
+  const {data} = await supabase.from('shops').select('*').eq('shop_place_id', id)
   return data?.[0] ?? null
+}
+
+export async function getShopSlugByOwner(id: string){
+  const supabase = await createClient()
+  const {data} = await supabase.from('shops').select('shop_slug').eq('owner_id', id)
+  return data?.[0].shop_slug ?? null
 }
 
 
@@ -29,7 +35,7 @@ export async function createShop(form: shopForm){
 
 export async function UpdateShop(id:string, owner_id:string){
   const supabase = await createClient()
-  const {data, error} = await supabase.from('shops').update({owner_id: owner_id}).eq('id', id).select()
+  const {data} = await supabase.from('shops').update({owner_id: owner_id}).eq('id', id).select()
   return data?.[0] ?? null
 }
 

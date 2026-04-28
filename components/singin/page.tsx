@@ -1,6 +1,7 @@
 'use client'
 import { LogIn } from "@/app/actions/auth"
 import {useState} from 'react'
+import Link from 'next/link'
 
 export default function SingIn(){
 
@@ -45,6 +46,7 @@ export default function SingIn(){
             <button type="submit">se connecter</button>
           </div>
         </form>
+        <Link href="/sign_up">S'inscrire</Link>
       </div>
     </div>
   )

@@ -5,9 +5,11 @@ import Link from 'next/link'
 export default async function Artist({ params }: { params: Promise<{ artist: string }> }) {
   const {artist} = await params
   const supabase = await createClient()
-  console.log("artist", artist)
+  const { data: { user } } = await supabase.auth.getUser()
+  const connected_user_id = user?.id
   const {data: artist_data} = await supabase.from ('users').select('*, cities(*), user_style(*, styles(*)), shop_id(*), guest_events(*, shop_id(*), cities(*))').eq('role', 'artist').eq('pseudo_slug', artist)
-  console.log("artistdata", artist_data)
+  const artist_id = artist_data?.[0]?.auth_id
+  const is_connected = connected_user_id === artist_id
   const pseudo = artist_data?.[0]?.pseudo
   const city = artist_data?.[0]?.cities.city_name
   const city_slug = artist_data?.[0]?.cities.city_slug
@@ -15,12 +17,12 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const shop_slug = artist_data?.[0]?.shop_id?.shop_slug
   const img = artist_data?.[0]?.illustration
   const events = artist_data?.[0]?.guest_events
-  console.log("event", events)
 
 
   return (
     <div className="  flex flex-col border border-amber-500 flex-1">
       <div>
+        <p>{is_connected ? "bjr" : ""}</p>
         <p>{pseudo}</p>
         <Link href={`/shop/${shop_slug}`}><p>{shop}</p></Link>
         <Link href={`/${city_slug}`}><p>{city}</p></Link>
