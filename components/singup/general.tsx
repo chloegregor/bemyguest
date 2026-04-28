@@ -2,9 +2,8 @@
 import  {useState} from 'react'
 import {useRouter} from 'next/navigation'
 import FormShopInCreateUser from '../searchForm/form/formShopInCreateUser'
-import { retrieveShop, UpdateShop } from '@/app/actions/shops'
-import { retrieveCity } from '@/app/actions/cites'
-import { CreateAuthUser, CreateUser } from '@/app/actions/users'
+import { SingUpData } from '@/types'
+import { SingUp } from '@/app/actions/auth'
 
 interface FormData {
   role: string,
@@ -36,102 +35,38 @@ export default function GeneralSignUp() {
   }
 
 
-   async function handleSubmit(form:FormData) {
-    try {
-      const role = form.get('role') as string
-      const email = form.get('email')as string
-      const password = form.get('password') as string
-      const pseudo = form.get('pseudo') as string
-      const pseudo_slug = pseudo?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()
-      const instagram = form.get('instagram') as string
-      let shop_id = null
-      let city_id = null
+   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+     e.preventDefault()
+    const form = new FormData(e.currentTarget)
 
-      if (!role || !email || !password){
-        setError("Champ obligatoire manquant")
+    const role = form.get('role') as string
+    const email = form.get('email')as string
+    const password = form.get('password') as string
+    const pseudo = form.get('pseudo') as string
+    const pseudo_slug = pseudo?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()
+    const instagram = form.get('instagram') as string
+
+    const sing_up_data : SingUpData = {
+      role: role,
+      resident: resident,
+      email: email,
+      password: password,
+      pseudo: pseudo,
+      pseudoSlug: pseudo_slug,
+      insta: instagram,
+      shopName: shopName,
+      shopSlug: shopSlug,
+      shopPlaceId: shopPlaceId,
+      cityPlaceId: cityPlaceId
+    }
+    try {
+      const results = await SingUp(sing_up_data)
+      if (results.error){
+        setError(results.error)
         return
       }
 
-      if (role === "artist" && resident && shopSlug && shopName && shopPlaceId) {
-        const shop = await retrieveShop(shopSlug, shopPlaceId, shopName)
-        if (!shop) {
-
-          setError("erreur lors de la récupération du shop")
-          return
-        }else{
-
-           shop_id = shop.id
-           city_id = shop.city_id
-        }
-
-      }
-      if (role === "artist" && !resident && cityPlaceId){
-        const city = await retrieveCity(cityPlaceId)
-        if (!city){
-          setError("erreur lors de la récupération de la ville")
-          return
-        }
-        city_id = city.id
-
-      }
-
-        const {user} = await CreateAuthUser(email, password)
-        console.log("user", user)
-        if (!user){
-          setError("erreur lors de la creation du user")
-          return
-        }
-        const auth_id = user.id
-        const user_data = {
-          auth_id: auth_id,
-          email: email,
-          role: role,
-          pseudo: pseudo,
-          pseudo_slug: pseudo_slug,
-          insta : instagram,
-          shop_id: shop_id,
-          city_id: city_id
-        }
-        const new_user = await CreateUser(user_data)
-        console.log("new user", new_user)
-        if (!new_user) {
-          setError("erreur lors de la creation du profil")
-          return
-        }
-
-        if (role === "shop" && shopSlug && shopName && shopPlaceId ){
-          const shop = await retrieveShop(shopSlug, shopPlaceId, shopName)
-          console.log("shop", shop)
-
-          if (!shop){
-            setError("erreur lors de la récupération du shop")
-            return
-          }
-          const owner_id = new_user.id
-          console.log("owner_id",owner_id)
-          const shop_id = shop.id
-          console.log("shop_id", shop_id)
-          const updated_shop = await UpdateShop(shop_id, owner_id)
-          console.log("retour shop udapt",updated_shop)
-          if(!updated_shop){
-            setError("erreur lors de l'association du profil au shop")
-            return
-          }
-
-          router.push(`/shop/${shop.shop_slug}`)
-
-        }
-
-
-        if (role === "artist"){
-          router.push(`/artist/${pseudo_slug}`)
-        }
-
-        if (role ==='particulier'){
-          router.push(`/dashboard/${new_user}`)
-        }
-
-
+      router.push(results.redirect!)
 
     } catch (err) {
       if (err instanceof Error) {
@@ -141,7 +76,6 @@ export default function GeneralSignUp() {
       }
     }
 
-
   }
 
 
@@ -149,7 +83,7 @@ export default function GeneralSignUp() {
   return (
     <div className="flex justify-center">
       <div className="lg:w-[60%] border p-10">
-        <form className="flex flex-col gap-5" action={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-5">
             <p>Je suis:</p>
             <div className='flex gap-5'>

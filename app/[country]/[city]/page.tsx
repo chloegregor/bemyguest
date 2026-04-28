@@ -73,7 +73,6 @@ async function getNearByData(city: CityType, radius: string){
 
 export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city_slug: string }>, searchParams:Promise<{radius: string}>}) {
   const {country, city_slug: city_params} = await params
-
   const {radius} = await searchParams
   const city_data= await getCity(country, city_params)
   const city_id = city_data.city.id

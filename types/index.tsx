@@ -17,3 +17,19 @@ export type Event = {
     }[]
   }
 }
+
+
+export type SingUpData = {
+  role: string
+  resident: boolean
+  email: string
+  password: string
+  pseudo: string | null
+  pseudoSlug: string | null
+  insta: string | null
+  shopName: string |null
+  shopSlug: string | null
+  shopPlaceId: string | null
+  cityPlaceId: string |null
+
+}
