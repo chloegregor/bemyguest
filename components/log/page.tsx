@@ -9,8 +9,9 @@ import Link from 'next/link'
 
 export async function LogComponent(){
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const auth_id = user?.id
+  const { data} = await supabase.auth.getClaims()
+  const user = data?.claims
+  const auth_id = user?.sub
   const user_profile = auth_id ? await GetUser(auth_id) : null
   const user_profile_id = user_profile?.id
   const role = user_profile?.role
@@ -22,9 +23,8 @@ export async function LogComponent(){
       return
     }
     shop_slug = shop
-
-
   }
+
   const user_slug = user_profile?.pseudo_slug
   url = role === 'artist' ? `/artist/${user_slug}` : role === 'particulier' ? `/dashboard/${user_slug}` : role === 'shop' ? `/shop/${shop_slug}` :"/"
   return(

@@ -18,6 +18,8 @@ interface CityType {
 async function getCity(country: string, city_slug: string){
   const supabase = await createClient()
   const {data: city, error} = await supabase.from('cities').select('id, city_name, country_name, lat, lng').eq('country_slug', country).eq('city_slug', city_slug)
+  console.log("city", city)
+  console.log('erreur city', error)
   return {city: city?.[0] || [], error: error}
 }
 
@@ -71,10 +73,11 @@ async function getNearByData(city: CityType, radius: string){
 
 
 
-export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city_slug: string }>, searchParams:Promise<{radius: string}>}) {
-  const {country, city_slug: city_params} = await params
+export default async function City ({ params, searchParams }: { params: Promise<{ country:string, city: string }>, searchParams:Promise<{radius: string}>}) {
+  const {country, city: city_params} = await params
+  console.log("country slug et city", `${country} - ${city_params}`)
   const {radius} = await searchParams
-  const city_data= await getCity(country, city_params)
+  const city_data = await getCity(country, city_params)
   const city_id = city_data.city.id
   const cityname = city_data.city.city_name
   const city_country = city_data.city.country_name

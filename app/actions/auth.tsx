@@ -23,6 +23,7 @@ export async function LogIn(email: string, password:string){
   }
   redirect('/')
 }
+
 export async function logout() {
   const supabase = await createClient()
   await supabase.auth.signOut()

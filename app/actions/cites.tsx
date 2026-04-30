@@ -36,41 +36,90 @@ export async function retrieveCity( placeId:string){
     return data
   }
 
-  if (!data){
 
-    const results = await geocodePlaceId(placeId)
-    if (!results){
-      throw new Error ("erreur de geocoding")
-    }
-    const {fr, en} = results
-    
-    const dptFr = fr.address_components.find((a) => a.types.includes('administrative_area_level_2')).short_name
-    const city_name = fr.address_components.find((a) => a.types.includes('locality')).short_name
-    const city_name_en = en.address_components.find((a) => a.types.includes('locality')).short_name
-    const city_slug = `${city_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}_${dptFr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}`
-    const lng = fr.geometry.location.lng
-    const lat = fr.geometry.location.lat
-    const country = fr.address_components.find((a) => a.types.includes('country')).long_name
-    const country_en = en.address_components.find((a) => a.types.includes('country')).long_name
-    const country_slug = en.address_components.find((a) => a.types.includes('country')).short_name.toLowerCase()
-
-    const city_form = {
-      city_name : city_name,
-      city_name_en: city_name_en,
-      city_slug: city_slug,
-      city_id: placeId,
-      lat: lat,
-      lng: lng,
-      country: country,
-      country_name_en: country_en,
-      country_slug: country_slug
-    }
-
-    const created_city = await createCity(city_form)
-    if (!created_city){
-      throw new Error ("erreur a la creation de la ville en base de donnée")
-    }
-    return created_city
-
+  const results = await geocodePlaceId(placeId)
+  if (!results){
+    throw new Error ("erreur de geocoding")
   }
+  const {fr, en} = results
+
+  const dptFr = fr.address_components.find((a) => a.types.includes('administrative_area_level_2')).short_name
+  const city_name = fr.address_components.find((a) => a.types.includes('locality')).short_name
+  const city_name_en = en.address_components.find((a) => a.types.includes('locality')).short_name
+  const city_slug = `${city_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}_${dptFr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}`
+  const lng = fr.geometry.location.lng
+  const lat = fr.geometry.location.lat
+  const country = fr.address_components.find((a) => a.types.includes('country')).long_name
+  const country_en = en.address_components.find((a) => a.types.includes('country')).long_name
+  const country_slug = en.address_components.find((a) => a.types.includes('country')).short_name.toLowerCase()
+
+  const city_form = {
+    city_name : city_name,
+    city_name_en: city_name_en,
+    city_slug: city_slug,
+    city_id: placeId,
+    lat: lat,
+    lng: lng,
+    country: country,
+    country_name_en: country_en,
+    country_slug: country_slug
+  }
+
+  const created_city = await createCity(city_form)
+  if (!created_city){
+    throw new Error ("erreur a la creation de la ville en base de donnée")
+  }
+  return created_city
+
+
+}
+
+
+export async function navigateOrCreateCity(id: string){
+
+  const data = await getCity(id)
+      if (data) {
+        return {redirect:`/${data.country_slug}/${data.city_slug}`}
+      }
+      else {
+        const results = await geocodePlaceId(id)
+        if(!results){
+          return {error: "erreur de geocoding"}
+        }
+        const {fr, en} = results
+
+        console.log('fr', fr)
+        const dptFr = fr.address_components.find((a) => a.types.includes('administrative_area_level_2')).short_name
+        const city_name = fr.address_components.find((a) => a.types.includes('locality')).short_name
+        const city_name_en = en.address_components.find((a) => a.types.includes('locality')).short_name
+        const city_slug = `${city_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}_${dptFr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}`
+        const lng = fr.geometry.location.lng
+        const lat = fr.geometry.location.lat
+        const country = fr.address_components.find((a) => a.types.includes('country')).long_name
+        const country_en = en.address_components.find((a) => a.types.includes('country')).long_name
+        const country_slug = en.address_components.find((a) => a.types.includes('country')).short_name.toLowerCase()
+
+
+
+        const city_form = {
+          city_name : city_name,
+          city_name_en: city_name_en,
+          city_slug: city_slug,
+          city_id: id,
+          lat: lat,
+          lng: lng,
+          country: country,
+          country_name_en: country_en,
+          country_slug: country_slug
+        }
+
+
+        const data = await createCity(city_form)
+        if(!data){
+          return {error: "erreur lors de la création de la ville en base de donnée"}
+        }
+
+        return {redirect:`/${country_slug}/${city_slug}`}
+
+      }
 }

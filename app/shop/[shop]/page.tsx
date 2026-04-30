@@ -13,11 +13,13 @@ import Link from 'next/link'
 export default async function Artist({ params }: { params: Promise<{ shop: string }> }) {
   const {shop: shop_slug} = await params
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const connected_user_id = user?.id ? user.id : null
+  const { data} = await supabase.auth.getClaims()
+  const user = data?.claims
+  const connected_user_id = user?.sub ? user.sub : null
+  console.log(data)
   const {data: shop_data, error} = await supabase.from ('shops').select('*, owner:users!shops_owner_id_fkey (auth_id), guest_events(*, user_id(*)),  artists:users!users_shop_id_fkey(*, user_style(*, styles(*))), cities(*)').eq('shop_slug', shop_slug)
   const shop_owner_id = shop_data?.[0]?.owner?.auth_id
-  console.log(shop_owner_id)
+  console.log(shop_data)
   const shopName = shop_data?.[0]?.shop_name
   const city = shop_data?.[0]?.cities.city_name
   const events = shop_data?.[0]?.guest_events
@@ -29,7 +31,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
       <div>
         <p>{shopName}</p>
         <p>{city}</p>
-        
+
       </div>
       <div className=" flex-1 flex gap-10 border border-amber-500 ">
         <h2>Artistes résident.es</h2>

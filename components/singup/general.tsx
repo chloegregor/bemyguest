@@ -5,14 +5,7 @@ import FormShopInCreateUser from '../searchForm/form/formShopInCreateUser'
 import { SingUpData } from '@/types'
 import { SingUp } from '@/app/actions/auth'
 
-interface FormData {
-  role: string,
-  email: string,
-  password:string,
-  instagram?: string,
-  pseudo?: string,
-  pseudo_slug?: string
-}
+
 
 export default function GeneralSignUp() {
   const router = useRouter()
@@ -35,7 +28,7 @@ export default function GeneralSignUp() {
   }
 
 
-   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
      e.preventDefault()
     const form = new FormData(e.currentTarget)
 
@@ -123,7 +116,7 @@ export default function GeneralSignUp() {
                         <input name="pseudo" type="text" className='border' required/>
                       </div>
                       <div className="flex gap-5 ">
-                        <p>je suis résident d'un shop : </p>
+                        <p>je suis résident.e dans un shop : </p>
                         <div className="flex gap-2">
                           <label htmlFor="no">Non</label>
                           <input name="resident" value='false' defaultChecked type="radio" onClick={() => {setResident(false); resetAll()}}/>

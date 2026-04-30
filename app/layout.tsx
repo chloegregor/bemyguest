@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/header"
-import Form from "@/components/searchForm/form/formShopInCreateUser";
+import Form from "@/components/searchForm/form/formCity";
 import Script from 'next/script'
+import { cn } from "@/lib/utils";
 
-
-
-
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +30,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="fr">
+    <html lang="fr" className={cn("font-sans", inter.variable)}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col p-2 h-screen  `}
       >
@@ -39,7 +38,7 @@ export default function RootLayout({
           <Header></Header>
         </header>
         <div>
-          <Form type={"shop"}></Form>
+          <Form type={"city"}></Form>
         </div>
         <div className=" flex flex-col border border-amber-500 flex-1">
           {children}
