@@ -3,7 +3,6 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -14,25 +13,25 @@ import {
 
 interface setDateProp {
   retreiveDate: (date: Date | null) => void
+  value: Date | undefined
 }
 
-export function DatePickerDemo({retreiveDate}: setDateProp ){
-  const [date, setDate] = React.useState<Date>()
+export function DatePickerDemo({retreiveDate, value}: setDateProp ){
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          data-empty={!date}
+          data-empty={!value}
           className="w-[280px] justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
         >
           <CalendarIcon />
-          {date ? format(date, "PPP") : <span>Choisir une date</span>}
+          {value ? format(value, "PPP") : <span>Choisir une date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={date} onSelect={(newDate) => {setDate(newDate); retreiveDate(newDate ?? null)}} />
+        <Calendar mode="single" selected={value ?? undefined} onSelect={(newDate) =>  retreiveDate(newDate ?? null)} />
       </PopoverContent>
     </Popover>
   )

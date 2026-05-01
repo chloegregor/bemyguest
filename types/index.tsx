@@ -31,5 +31,6 @@ export type SingUpData = {
   shopSlug: string | null
   shopPlaceId: string | null
   cityPlaceId: string |null
+  shop_email?: string
 
 }

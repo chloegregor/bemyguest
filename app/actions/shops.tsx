@@ -9,6 +9,7 @@ type shopForm = {
   owner_id?: number,
   shop_place_id: string,
   city_id: number
+  email: string
 }
 
 
@@ -27,27 +28,30 @@ export async function getShopSlugByOwner(id: string){
 
 export async function createShop(form: shopForm){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').insert({shop_name: form.shop_name, shop_slug:form.shop_slug, shop_place_id: form.shop_place_id, city_id: form.city_id, owner_id: form.owner_id}).select()
+  const {data} = await supabase.from('shops').insert({shop_name: form.shop_name, shop_slug:form.shop_slug, shop_place_id: form.shop_place_id, city_id: form.city_id, owner_id: form.owner_id, owner_email: form.email}).select()
   return data?.[0] ?? null
 
 }
 
 
-export async function UpdateShop(id:string, owner_id:string){
+export async function UpdateShop(id:string, owner_id:string, email:string){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').update({owner_id: owner_id}).eq('id', id).select()
+  const {data} = await supabase.from('shops').update({owner_id: owner_id, owner_email: email}).eq('id', id).select()
   return data?.[0] ?? null
 }
 
-export async function retrieveShop(nameSlug:string, placeId:string, name:string){
+export async function retrieveShop(nameSlug:string, placeId:string, name:string, email?:string){
 
   const data =  await getShop(placeId)
 
   if (data) {
-    return data
+    return {data: data}
   }
 
   if (!data){
+      if (!email){
+        return {error:"email"}
+      }
 
       const results = await geocodePlaceId(placeId)
       if (!results){
@@ -92,7 +96,8 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string)
           city_id : created_city.id,
           shop_name : name,
           shop_slug: nameSlug,
-          shop_place_id: placeId
+          shop_place_id: placeId,
+          email: email
         }
 
         const shop  = await createShop(shop_form)
@@ -102,21 +107,21 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string)
         return shop
       }
 
-      if (data) {
-        const shop_form = {
-           city_id : data.id,
-            shop_place_id : placeId,
-            shop_name : name,
-            shop_slug : nameSlug
-        }
-
-        const shop  = await createShop(shop_form)
-        if (!shop) {
-          throw new Error ('erreur lors de la création du shop en base de donnée')
-        }
-        return shop
-
+      const shop_form = {
+          city_id : data.id,
+          shop_place_id : placeId,
+          shop_name : name,
+          shop_slug : nameSlug,
+          email: email
       }
+
+      const shop  = await createShop(shop_form)
+      if (!shop) {
+        throw new Error ('erreur lors de la création du shop en base de donnée')
+      }
+      return {data: shop}
+
+
 
   }
 }

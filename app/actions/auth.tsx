@@ -35,6 +35,7 @@ export async function logout() {
 export async function SingUp(data: SingUpData): Promise<{error?: string, redirect?: string}> {
 
   try{
+
     let shop_id = null
     let city_id = null
 
@@ -44,13 +45,15 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
     }
 
     if (data.role === "artist" && data.resident && data.shopSlug && data.shopName && data.shopPlaceId) {
-      const shop = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName)
-      if (!shop) {
+      const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.email)
+      if (result.error === "email"){
+        return {error:'email'}
+      }
+      if (!result.data) {
         return {error: "erreur lors de la récupération du shop"}
       }else{
-
-          shop_id = shop.id
-          city_id = shop.city_id
+          shop_id = result.data.id
+          city_id = result.data.city_id
       }
 
     }
@@ -94,7 +97,8 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         }
         const owner_id = new_user.id
         const shop_id = shop.id
-        const updated_shop = await UpdateShop(shop_id, owner_id)
+        const owner_mail = new_user.email
+        const updated_shop = await UpdateShop(shop_id, owner_id, owner_mail)
         if(!updated_shop){
           return {error: "erreur lors de l'association du profil au shop"}
         }

@@ -26,6 +26,8 @@ interface FormProps{
 
 }
 
+
+
 export async function CreateGuest(form: guestProps){
 
   const supabase = await createClient()
@@ -56,9 +58,12 @@ export async function handleForm(form: FormProps){
   if (form.user_id && form.shop_name && form.shop_slug && form.shop_place_id ){
 
     try{
-      const shop = await retrieveShop(form.shop_slug, form.shop_place_id, form.shop_name)
+      const shop = await retrieveShop(form.shop_slug, form.shop_place_id, form.shop_name, form.email ?? undefined)
       if(!shop){
         return{error: "erreur lors de l'association avec le shop"}
+      }
+      if (shop.error === "email"){
+        return {error: "email"}
       }
       shop_id = shop.id
       city_id = shop.city_id

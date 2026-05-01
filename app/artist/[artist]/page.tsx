@@ -52,7 +52,12 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
                   <p>{event.end_date}</p>
                 </div>
                 <div className='flex gap-2'>
-                  <Link href={`/shop/${event?.shops?.shop_slug}`}><p>{`${event?.shops?.shop_name}`}</p></Link>
+                  {event.shop_id  &&
+                    <>
+                      <Link href={`/shop/${event?.shops?.shop_slug}`}><p>{`${event?.shops?.shop_name}`}</p></Link>
+                      <p>|</p>
+                    </>
+                  }
                   <Link href={`/${event?.cities?.city_slug}`}><p>{`${event?.cities?.city_name}`}</p></Link>
                 </div>
 

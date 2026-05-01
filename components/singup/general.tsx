@@ -13,7 +13,7 @@ export default function GeneralSignUp() {
   const [resident, setResident] = useState(false)
   const [shopSlug, setShopSlug] = useState<string|null>(null)
   const [shopName, setShopName] = useState<string|null>(null)
-
+  const [invitation, setInvitation] = useState<boolean>(false)
   const [shopPlaceId, setPlaceId] = useState<string|null>(null)
   const [cityPlaceId, setCityPlaceId] = useState<string|null>(null)
   const [error, setError] = useState<string|null>(null)
@@ -55,8 +55,14 @@ export default function GeneralSignUp() {
     try {
       const results = await SingUp(sing_up_data)
       if (results.error){
-        setError(results.error)
-        return
+        if (results.error === "mail"){
+          setInvitation(true)
+          return
+        }else {
+          setError(results.error)
+          return
+        }
+
       }
 
       router.push(results.redirect!)
@@ -128,12 +134,23 @@ export default function GeneralSignUp() {
                       </div>
                       {resident === true ? (
                         <div>
-                          <p>Selectionnez votre shop: </p>
-                          <FormShopInCreateUser type={"shop"}
-                          setObject={(slug:string, placeId:string, name:string) =>
-                          {setShopSlug(slug)
-                          setPlaceId(placeId)
-                          setShopName(name)}}/>
+                          <div>
+                            <p>Selectionnez votre shop: </p>
+                            <FormShopInCreateUser type={"shop"}
+                            setObject={(slug:string, placeId:string, name:string) =>
+                            {setShopSlug(slug)
+                            setPlaceId(placeId)
+                            setShopName(name)}}/>
+                          </div>
+                          {invitation &&
+                            <div>
+                              <p>Invitez la ou le gerant.e du shop à s&apos;inscrire pour rendre votre profil visible sur la page du shop</p>
+                              <div>
+                                <label htmlFor="owner_email">Email </label>
+                                <input type="email" name="owner_mail" required placeholder="taper l'email" />
+                              </div>
+                            </div>
+                          }
                         </div>
                       ):<div>
                         <p>Selectionnez votre ville de résidence:</p>
