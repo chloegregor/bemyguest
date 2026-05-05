@@ -40,9 +40,14 @@ export default function RootLayout({
         <div>
           <Form type={"city"}></Form>
         </div>
-        <div className=" flex flex-col border border-amber-500 flex-1">
+        <div className=" flex flex-col flex-1 pt-10">
           {children}
         </div>
+        <footer>
+          <div className="">
+            <p>font : bye bye binary</p>
+          </div>
+        </footer>
         <Script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places`} strategy="afterInteractive"/>
       </body>
     </html>

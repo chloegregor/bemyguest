@@ -28,13 +28,13 @@ export async function LogComponent(){
   const user_slug = user_profile?.pseudo_slug
   url = role === 'artist' ? `/artist/${user_slug}` : role === 'particulier' ? `/dashboard/${user_slug}` : role === 'shop' ? `/shop/${shop_slug}` :"/"
   return(
-    <div className="border flex items-top">
+    <div className="flex items-top gap-5">
       {user_profile &&
       <>
-      <div className="border">
+      <div className="">
         <Link href={url}><p>profil</p></Link>
       </div>
-       <div className="border">
+       <div className="">
         <form action={logout}>
           <button className="cursor-pointer" type="submit">log out</button>
         </form>
@@ -42,7 +42,7 @@ export async function LogComponent(){
       </>
       }
       {!user_profile &&
-        <div className="border">
+        <div className="">
           <Link href="/login">log in</Link>
         </div>
       }

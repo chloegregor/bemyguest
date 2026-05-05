@@ -45,15 +45,21 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
     }
 
     if (data.role === "artist" && data.resident && data.shopSlug && data.shopName && data.shopPlaceId) {
-      const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.email)
-      if (result.error === "email"){
-        return {error:'email'}
+      console.log("owner email", data.owner_email)
+      const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.owner_email)
+      if (!result){
+        return  {error: 'erreur a la récupération du shop'}
       }
-      if (!result.data) {
+      if (result.error){
+        console.log("une erreur oui")
+        return {error:result.error}
+
+      }
+      if (!result.shop) {
         return {error: "erreur lors de la récupération du shop"}
       }else{
-          shop_id = result.data.id
-          city_id = result.data.city_id
+          shop_id = result.shop.id
+          city_id = result.shop.city_id
       }
 
     }
@@ -73,6 +79,7 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         return {error: "erreur lors de la creation du user"}
       }
       const auth_id = user.id
+
       const user_data = {
         auth_id: auth_id,
         email: data.email,
@@ -81,7 +88,7 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         pseudo_slug: data.role === "particulier" ? auth_id.slice(0, 7) : data.pseudoSlug,
         insta : data.insta,
         shop_id: shop_id,
-        city_id: city_id
+        city_id: city_id,
       }
       const new_user = await CreateUser(user_data)
       if (!new_user) {
@@ -90,20 +97,24 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
       }
 
       if (data.role === "shop" && data.shopSlug && data.shopName && data.shopPlaceId ){
-        const shop = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName)
+        const shop = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.email)
 
         if (!shop){
           return {error: "erreur lors de la récupération du shop"}
         }
         const owner_id = new_user.id
-        const shop_id = shop.id
-        const owner_mail = new_user.email
-        const updated_shop = await UpdateShop(shop_id, owner_id, owner_mail)
+        const shop_id = shop.shop.id
+        const owner_email = new_user.email
+
+        const updated_shop = await UpdateShop(shop_id, owner_id, owner_email)
+        console.log("le shop updated", updated_shop)
+
+
         if(!updated_shop){
           return {error: "erreur lors de l'association du profil au shop"}
         }
 
-        return {redirect:`/shop/${shop.shop_slug}`}
+        return {redirect:`/shop/${shop.shop.shop_slug}`}
 
       }
 

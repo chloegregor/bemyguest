@@ -3,7 +3,7 @@ import { Event } from '@/types/index'
 import Link from 'next/link'
 
 export default function GuestCard({event}: { event: Event }) {
-  const styles = event.users.user_style.map((style) => style.styles.name)
+  const styles = event.users?.user_style?.map((style) => style.styles.name)
   const debut = event.start_date
   const fin = event.end_date ?? event.start_date
   const shop_name = event.shops?.shop_name
@@ -15,10 +15,10 @@ export default function GuestCard({event}: { event: Event }) {
   const artist = event.users
   return(
     <div className="flex flex-col gap-2  h-full w-[200px]">
-      <div><Link href={`/artist/${event.users.pseudo_slug}`}>{event.users.pseudo}</Link></div>
+      <div><Link href={`/artist/${artist.pseudo_slug}`}>{artist.pseudo}</Link></div>
       <div className="relative aspect-square w-full ">
         <Image src="https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"
-        alt={`illustration ${event.users.pseudo}`} fill className="object-fill"/>
+        alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
       </div>
 
       <div className="flex flex-col">

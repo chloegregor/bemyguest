@@ -38,6 +38,7 @@ export default function GeneralSignUp() {
     const pseudo = form.get('pseudo') as string
     const pseudo_slug = pseudo?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()
     const instagram = form.get('instagram') as string
+    const owner_email = form.get('owner_email') as string
 
     const sing_up_data : SingUpData = {
       role: role,
@@ -50,12 +51,14 @@ export default function GeneralSignUp() {
       shopName: shopName,
       shopSlug: shopSlug,
       shopPlaceId: shopPlaceId,
-      cityPlaceId: cityPlaceId
+      cityPlaceId: cityPlaceId,
+      owner_email: owner_email ?? undefined
+
     }
     try {
       const results = await SingUp(sing_up_data)
       if (results.error){
-        if (results.error === "mail"){
+        if (results.error === "email"){
           setInvitation(true)
           return
         }else {
@@ -99,25 +102,25 @@ export default function GeneralSignUp() {
                 <input name="role" value="shop" type="radio" onClick={()=> {setRole("shop"); resetAll()}}/>
               </div>
             </div>
-            <div className="flex flex-col gap-5" >
+            <div className="flex flex-col gap-2" >
               <label htmlFor="email">email</label>
               <input name="email" type="email" className='border' required />
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
               <label htmlFor="password">password</label>
               <input name="password" type="password" minLength={8} className='border' required/>
             </div>
 
               {role != "particulier" && (
                 <div className='flex flex-col gap-5'>
-                  <div className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-2">
                     <label htmlFor="instagram">Instagram</label>
                     <input className='border' type="url" name="instagram" />
                   </div>
 
                   {role === "artist" && (
                     <div className='flex flex-col gap-5'>
-                      <div className="flex flex-col gap-5">
+                      <div className="flex flex-col gap-2">
                         <label htmlFor="pseudo">pseudo</label>
                         <input name="pseudo" type="text" className='border' required/>
                       </div>
@@ -133,8 +136,8 @@ export default function GeneralSignUp() {
                         </div>
                       </div>
                       {resident === true ? (
-                        <div>
-                          <div>
+                        <div className=" flex flex-col gap-5">
+                          <div className="flex flex-col gap-2">
                             <p>Selectionnez votre shop: </p>
                             <FormShopInCreateUser type={"shop"}
                             setObject={(slug:string, placeId:string, name:string) =>
@@ -143,11 +146,11 @@ export default function GeneralSignUp() {
                             setShopName(name)}}/>
                           </div>
                           {invitation &&
-                            <div>
+                            <div className="flex flex-col gap-2">
                               <p>Invitez la ou le gerant.e du shop à s&apos;inscrire pour rendre votre profil visible sur la page du shop</p>
-                              <div>
-                                <label htmlFor="owner_email">Email </label>
-                                <input type="email" name="owner_mail" required placeholder="taper l'email" />
+                              <div className="flex flex-col gap-2">
+                                <label htmlFor="owner_email">Email</label>
+                                <input type="email" name="owner_email" required className='border' />
                               </div>
                             </div>
                           }
@@ -162,7 +165,8 @@ export default function GeneralSignUp() {
                     </div>
                   )}
                   {role === "shop" && (
-                    <div>
+                    <div className="flex flex-col gap-2">
+                      <p>Selectionner votre shop :</p>
                       <FormShopInCreateUser type={"shop"}
                       setObject={(slug:string, placeId:string, name:string) =>
                       {setShopSlug(slug)

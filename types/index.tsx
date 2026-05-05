@@ -1,20 +1,26 @@
 // types/index.ts
 export type Event = {
   id: string
-  city_name: string
-  city_slug: string
-  shop_name: string
-  shop_slug: string
   start_date: string
   end_date: string | null
-  user_id: string
   users: {
     pseudo: string
+    pseudo_slug: string
     insta: string
     user_style: {
       style_id: string
       styles: { name: string }
     }[]
+  }
+  cities:{
+    city_name: string,
+    city_slug: string,
+    country_name: string,
+    country_slug: string,
+  }
+  shops:{
+    shop_name: string,
+    shop_slug: string,
   }
 }
 
@@ -31,6 +37,6 @@ export type SingUpData = {
   shopSlug: string | null
   shopPlaceId: string | null
   cityPlaceId: string |null
-  shop_email?: string
+  owner_email?: string
 
 }

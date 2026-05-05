@@ -22,7 +22,7 @@ export async function getShop(id:string){
 export async function getShopSlugByOwner(id: string){
   const supabase = await createClient()
   const {data} = await supabase.from('shops').select('shop_slug').eq('owner_id', id)
-  return data?.[0].shop_slug ?? null
+  return data?.[0]?.shop_slug ?? null
 }
 
 
@@ -45,7 +45,7 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
   const data =  await getShop(placeId)
 
   if (data) {
-    return {data: data}
+    return {shop:data}
   }
 
   if (!data){
@@ -54,10 +54,11 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
       }
 
       const results = await geocodePlaceId(placeId)
+
       if (!results){
         throw new Error("erreur de geogocing")
       }
-      const {fr, en} = results
+      const {fr} = results
       const city_name = fr.address_components.find((a) => a.types.includes('locality')).short_name
       const place_id = await geocodeAddress(city_name)
       if (!place_id) {
@@ -66,6 +67,13 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
       const data = await getCity(place_id)
 
       if(!data) {
+
+        const results = await geocodePlaceId(place_id)
+        if (!results){
+        throw new Error("erreur de geogocing")
+        }
+        const {fr, en} = results
+
         const dptFr = fr.address_components.find((a) => a.types.includes('administrative_area_level_2')).short_name
         const city_name_en = en.address_components.find((a) => a.types.includes('locality')).short_name
         const city_slug = `${city_name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}_${dptFr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-').trim()}`
@@ -79,7 +87,7 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
           city_name : city_name,
           city_name_en: city_name_en,
           city_slug: city_slug,
-          city_id: placeId,
+          city_id: place_id,
           lat: lat,
           lng: lng,
           country: country,
@@ -104,7 +112,7 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
         if (!shop) {
           throw new Error ("erreur lors de la création du shop en base de donnée")
         }
-        return shop
+        return {shop: shop}
       }
 
       const shop_form = {
@@ -119,7 +127,7 @@ export async function retrieveShop(nameSlug:string, placeId:string, name:string,
       if (!shop) {
         throw new Error ('erreur lors de la création du shop en base de donnée')
       }
-      return {data: shop}
+      return {shop:shop}
 
 
 

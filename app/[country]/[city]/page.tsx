@@ -123,17 +123,17 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   {data.guests.length > 10 ?
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.guests} type={"guests"}/>
-                    <Link className="w-[200px] flex items-center" href={`/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
+                    <Link className="w-[200px] flex items-center" href={`/${country}/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
                   </div> : data.guests.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de guest référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${cityname}/guests?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${country}/${cityname}/guests?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.guests} type={"guests"}/>
                     <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/guests?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${country}/${city_params}/guests?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                   }
@@ -144,17 +144,17 @@ export default async function City ({ params, searchParams }: { params: Promise<
                {data.artists.length > 10 ?
                   <div className="flex gap-5 overflow-x-auto">
                     <List data={data.artists} type={"artists"}/>
-                    <Link className="w-[200px] flex items-center" href={`/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
+                    <Link className="w-[200px] flex items-center" href={`/${country}/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
                   </div> : data.artists.length === 0 ?
                   <div>
-                    <p className="text-[0.8em] text-gray-500">Pas d'artiste référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${city_params}/artists?radius=50`}><p >Voir plus</p>
+                    <p className="text-[0.8em] text-gray-500">Pas d&apos;artiste référencé à {cityname} pour le moment.</p>
+                    <Link href={`/${country}/${city_params}/artists?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.artists} type={"artists"}/>
                    <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/artists?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${country}/${city_params}/artists?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                 }
@@ -165,18 +165,18 @@ export default async function City ({ params, searchParams }: { params: Promise<
               {data.shops.length > 10 ?
                   <div className="flex gap-5  overflow-x-auto">
                     <List data={data.shops} type={"shops"}/>
-                    <Link className="w-[200px] flex items-center" href={`/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
+                    <Link className="w-[200px] flex items-center" href={`/${country}/${city_params}/guests`}><p className="text-center">Voir plus</p></Link>
                   </div>
                   : data.shops.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de shop référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${cityname}/shops?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${country}/${cityname}/shops?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5 items-center  overflow-x-auto">
                     <List data={data.shops} type={"shops"}/>
                     <div className="flex items-center">
-                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${city_params}/shops?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
+                      <Link className="w-[200px] p-1 h-fit border bg-white rounded-full" href={`/${country}/${city_params}/shops?radius=50`}><p className="text-center text-[0.8em]">Voir plus</p></Link>
                     </div>
                   </div>
                 }

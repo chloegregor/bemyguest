@@ -10,17 +10,17 @@ export default function ArtistCard({artist}) {
   const shop_name = artist.shop?.shop_name
   const shop_slug = artist.shop?.shop_slug
   return(
-    <div className="flex flex-col gap-2 w-[200px] h-full ">
-      <div><Link href={`/artist/${artist.pseudo_slug}`}>{artist.pseudo}</Link></div>
+    <div className="flex flex-col gap-2 w-[250px] h-full  ">
+      <div className="text-center"><Link href={`/artist/${artist.pseudo_slug}`}>{artist.pseudo}</Link></div>
       <div className='flex gap-2'>
       </div>
-      <div className="relative aspect-square w-full ">
+      <div className="relative aspect-square w-[200px] self-center  ">
         <Image src="https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"
         alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
       </div>
-      <div>
+      <div className="  w-[200px] self-center ">
         <Link href={`/${country_slug}/${city_slug}`}><p className="text-[0.8em]">{city},{" "}{country}</p></Link>
-        <Link href={`/shop/${shop_slug}`}><p className="text-[0.8em]">{shop_name}</p></Link>
+        <Link href={`/shop/${shop_slug}`} className=""><p className="text-[0.8em] truncate">{shop_name}</p></Link>
       </div>
       <div>
       </div>

@@ -3,20 +3,21 @@ import { createClient } from "@/lib/supabase/server"
 
 
 interface FormProps {
-  auth_id : string
+  auth_id?: string
   role: string
   email: string
-  pseudo: string | null
-  pseudo_slug: string | null
-  insta: string | null
-  shop_id: string | null
-  city_id: number | null
+  pseudo?: string | null
+  pseudo_slug?: string | null
+  insta?: string | null
+  shop_id?: string | null
+  city_id?: number | null
+  status?: string
 }
 
 
 export async function CreateUser(form:FormProps){
   const supabase = await createClient()
-  const {data} = await supabase.from('users').insert(form).select()
+  const {data, } = await supabase.from('users').insert(form).select()
   return data?.[0] ?? null
 }
 

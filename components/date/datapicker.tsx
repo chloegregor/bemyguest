@@ -24,7 +24,7 @@ export function DatePickerDemo({retreiveDate, value}: setDateProp ){
         <Button
           variant="outline"
           data-empty={!value}
-          className="w-[280px] justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+          className="w-[280px] justify-start text-left font-normal bg-gray-50"
         >
           <CalendarIcon />
           {value ? format(value, "PPP") : <span>Choisir une date</span>}

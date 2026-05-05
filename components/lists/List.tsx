@@ -9,7 +9,7 @@ export default function List({data, type}) {
   return(
         <>
          {data.map((item, index) => (
-          <div key={index} className=" flex items-center justify-center">
+          <div key={index} className="flex justify-center">
             {type === "artists" &&
               <ArtistCard artist={item}/>
             }

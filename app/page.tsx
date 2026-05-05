@@ -12,7 +12,7 @@ async function getData(param: string){
   const supabase = await createClient()
 
   const [g, a, s] = await Promise.all([
-    supabase.from ('guest_events').select(`*,users(pseudo, pseudo_slug, insta, user_style(style_id, styles(name))),shops(*), cities(*)`).gte('end_date', today).limit(10),
+    supabase.from ('guest_events').select(`*,users(pseudo, pseudo_slug, insta, user_style(style_id, styles(name))),shops(*), cities(*)`).gte('end_date', today).eq('status', "validated").limit(10),
     supabase.from ('users').select('*, shop:shop_id(*), cities(*)').eq('role', 'artist').limit(10),
     supabase.from ('shops').select('*, cities(*)').limit(10)
   ] )
@@ -42,7 +42,7 @@ export default async function Page({searchParams}: PageProps) {
             <List data={data.artists} type={"artists"}/>
           </div>
           <h2 className="text-[2em]">Les shops</h2>
-          <div className="flex gap-5  overflow-x-auto">
+          <div className="flex gap-5 overflow-x-auto">
             <List data={data.shops} type={"shops"}/>
           </div>
 

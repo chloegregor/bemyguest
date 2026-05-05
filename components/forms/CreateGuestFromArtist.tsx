@@ -7,12 +7,11 @@ import { useRouter } from 'next/navigation'
 
 interface CreateGuestProps{
   user_id?: string
-  shop_id?: string
   onClose: (open:boolean) => void
   onSuccess: ()=> void
 }
 
-export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: CreateGuestProps){
+export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: CreateGuestProps){
   const router = useRouter()
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
@@ -22,12 +21,8 @@ export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: Cre
   const [cityPlaceId, setCityPlaceId] = useState<string | null>(null)
   const [isShop, setIsShop] = useState<boolean>(true)
   const [invitation, setInvitation] = useState(false)
-  const [userId, setUserId] =useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-
-  console.log( " date de début", startDate)
-  console.log('invitation', invitation)
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
      e.preventDefault()
@@ -37,7 +32,8 @@ export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: Cre
 
     const start_date = startDate?.toISOString().split("T")[0]
     const end_date = endDate?.toISOString().split("T")[0]
-
+    const email = form.get('email') as string
+    
     if (!startDate || !endDate ){
       setLoading(false)
       setError('champs obligatoires manquants')
@@ -49,25 +45,18 @@ export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: Cre
       return
     }
 
-    if (shop_id && !userId){
-      setLoading(false)
-      setError('champs obligatoire manquants')
-      return
-    }
     const guest_data = {
       start_date: start_date as string,
       end_date: end_date as string,
-      shop_id: shop_id ?? null,
-      user_id : user_id ?? null,
+      user_id : user_id,
       shop_name: shopName,
       shop_place_id: shopPlaceId,
       shop_slug: shopSlug,
       city_place_id: cityPlaceId,
-      email: form.get('email') as string
+      email: email
     }
     try{
       const result = await handleForm(guest_data)
-      console.log('result', result)
       if (!result){
         setLoading(false)
         setError("erreur à la création du guest")
@@ -111,7 +100,7 @@ export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: Cre
 
           }
           <form onSubmit={handleSubmit}>
-            <div>
+            <div className=" flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <label htmlFor="start_date">Date de début</label>
                 <DatePickerDemo value ={startDate ?? undefined } retreiveDate={(date:Date | null) => {setStartDate(date)}}/>
@@ -156,13 +145,6 @@ export default function CreateGuest({ user_id, shop_id, onClose, onSuccess}: Cre
                       }}/>
                     }
                   </div>
-                }
-                {shop_id &&
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="start_date">Artiste</label>
-
-
-                </div>
                 }
             </div>
             <button type='submit'>Créer</button>

@@ -8,7 +8,8 @@ export async function geocodePlaceId(placeId: string) {
   ])
 
   if (!frRes.ok || !enRes.ok){
-    throw new Error ("erreur reseau geocoding")
+    const error = await frRes.text()
+    throw new Error (`erreur reseau geocoding avec placeId ___ ${error}`)
   }
 
   const [frData, enData] = await Promise.all([
@@ -26,11 +27,11 @@ export async function geocodeAddress(address:string){
 
   )
   if(!res.ok){
-    throw new Error ("erreur reseau geocoding")
+    throw new Error ("erreur reseau geocoding avec address")
   }
 
   const data = await res.json()
 
   if (data.status !== "OK" || !data.results?.length) return null
-  return data.results[0]
+  return data.results[0].place_id
 }
