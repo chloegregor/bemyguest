@@ -18,10 +18,9 @@ export default function AddModale({user_id, shop_id, city_id}: {user_id?: string
   console.log(open)
 
   return(
-    <div>
+    <div className=" h-fit absolute right-0 -top-5">
       <button onClick={()=>setOpen(true)}>
-        <div className="flex gap-3">
-          <p>Ajouter</p>
+        <div className="flex p-2 polygon">
           <Plus/>
         </div>
       </button>

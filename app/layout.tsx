@@ -37,7 +37,7 @@ export default function RootLayout({
         <header>
           <Header></Header>
         </header>
-        <div>
+        <div className="mt-[1em]  flex justify-center">
           <Form type={"city"}></Form>
         </div>
         <div className=" flex flex-col flex-1 pt-10">

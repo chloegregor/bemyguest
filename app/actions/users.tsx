@@ -35,3 +35,11 @@ export async function GetParticulier(id: string){
   const {data:profile, error} = await supabase.from('users').select('*').eq('role', 'particulier').eq('pseudo_slug', id)
   return profile?.[0] ?? error
 }
+
+
+export async function findUser(email:string){
+  const supabase = await createClient()
+  const {data} = await supabase.from('users').select('id').eq('role', "artist").eq('email', email)
+  return data?.[0] ?? null
+
+}
