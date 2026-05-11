@@ -17,7 +17,7 @@ async function getArtists(page: number, city_id?: number){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from ('users').select('*, shop:shop_id(*), cities(*)', {count:"exact"}).eq('role', 'artist').range(from, to)
+  const {data, count} = await supabase.from ('users').select('*, shop:shop_id(*), cities(*)', {count:"exact"}).eq('role', 'artist').eq('status', 'validated').range(from, to)
     return {data: data, count:count}
 }
 

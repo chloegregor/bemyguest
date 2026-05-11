@@ -27,19 +27,21 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const city_slug = shop?.cities.city_slug
   const city_id = shop?.cities.id
   const country_slug = shop?.cities.country_slug
-  const events_validated = shop?.guest_events
+  const events_validated = shop?.guest_events.filter((guest) => guest.status === 'validated')
+  const not_confirmed = shop?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'shop')
+  const events = [...events_validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
   const artists = shop?.artists
   const is_connected = connected_user_id === shop_owner_id
 
   return (
-    <div className=" flex flex-col flex-1 gap-10">
+    <div className=" flex flex-col flex-1 gap-10" >
       <div>
-        <p className="text-[1.2em]">{shopName}</p>
-        <Link href={`/${country_slug}/${city_slug}`}><p>{city}</p></Link>
+        <h1 >{shopName}</h1>
+        <Link href={`/${country_slug}/${city_slug}`}><h2>{city}</h2></Link>
       </div>
-      <div className=" flex-1 flex flex-row gap-10">
+      <div className=" flex-1 flex flex-row gap-10 ">
         <div className=" flex-1 flex flex-col gap-5 ">
-          <h2 className='text-[1.5em]'>Artistes résident..es</h2>
+          <h3 className='text-[1.2em] font'>Artistes résident..es</h3>
           <div className=" p-5 flex flex-wrap gap-2 border border-[] flex-1 ">
             {artists?.map((artist,index)=> {
               return (
@@ -53,30 +55,35 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
           </div>
         </div>
 
-        <div className=" w-[40%] h-fit p-2 flex flex-col gap-5">
+        <div className=" w-[40%] h-fit  flex flex-col">
           <div className="flex relative ">
             {is_connected &&
-              <div className=" w-full">
-                <GuestDropDown shop_id={shop_id} data={events_validated} slug={shop_slug}></GuestDropDown>
+              <div className=" w-full relative">
+                <GuestDropDown shop_id={shop_id} events={events} slug={shop_slug}></GuestDropDown>
                 <AddModale shop_id={shop_id} city_id={city_id}></AddModale>
               </div>
             }
           </div>
           { !is_connected &&
-            <div>
+            <div className="flex flex-col gap-5 ">
               <h2>Guests en cours et à venir</h2>
-             { events_validated?.map((event, index) => {
-              return (
-                <div key={index} className="flex p-2 border justify-between">
-                  <div className="flex gap-2">
-                    <p>{formDate(event.start_date)}</p>
-                    <MoveRight/>
-                    <p>{formDate(event.end_date)}</p>
+              <div className="border">
+              { events_validated?.map((event, index) => {
+                return (
+                  <div key={index} className="flex p-2 border justify-between">
+                    <div className="flex gap-2">
+                      <p>{formDate(event.start_date)}</p>
+                      <MoveRight/>
+                      <p>{formDate(event.end_date)}</p>
+                    </div>
+                    <Link href={`/artist/${event.user_id.pseudo_slug}`}><p>{`${event.user_id.pseudo}`}</p></Link>
                   </div>
-                  <Link href={`/artist/${event.user_id.pseudo_slug}`}><p>{`${event.user_id.pseudo}`}</p></Link>
-                </div>
-              )
-              })}
+                )
+                })}
+                { events_validated.length === 0 &&
+                  <p>Pas de guest prévu.</p>
+                }
+              </div>
             </div>
           }
         </div>

@@ -47,7 +47,7 @@ export async function CreateGuest(form: guestProps){
 
 export async function GetGuestClient(shop_id: string){
   const supabase = await createClient()
-  const  {data, error} = await supabase.from('guest_events').select('*, user_id(id, pseudo, pseudo_slug)').eq('shop_id', shop_id).eq('status', 'pending').gt('start_date', new Date().toISOString())
+  const  {data, error} = await supabase.from('guest_events').select('*, user_id(id, pseudo, pseudo_slug)').eq('shop_id', shop_id).eq('status', 'pending').eq('created_by', 'artist').gt('start_date', new Date().toISOString())
   return data ?? null
 
 }
@@ -55,12 +55,11 @@ export async function GetGuestClient(shop_id: string){
 
 export async function getGuestClientFromArtist(user_id: string){
    const supabase = await createClient()
-  const  {data, error} = await supabase.from('guest_events').select('*, city_id(city_name, country_slug, city_slug), shop_id(id, shop_name, shop_slug )').eq('user_id', user_id).eq('status', 'pending').gt('start_date', new Date().toISOString())
+  const  {data, error} = await supabase.from('guest_events').select('*, city_id(city_name, country_slug, city_slug), shop_id(id, shop_name, shop_slug )').eq('user_id', user_id).eq('status', 'pending').eq('created_by', 'shop').gt('start_date', new Date().toISOString())
   return data ?? null
 }
 
 export async function ValidateGuest(shop_id: string, user_id:string, status: string, slug:string){
-  console.log("slug", slug)
   const supabase = await createClient()
   const {data, error} = await supabase.from('guest_events').update({status: status}).eq('shop_id', shop_id).eq('user_id', user_id)
   revalidatePath(`/shop/${slug}`)

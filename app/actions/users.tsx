@@ -29,6 +29,11 @@ export async function GetUser(auth_id: string){
 
 }
 
+export async function GetUserBySlug(slug: sting){
+  const supabase = await createClient()
+  const {data} = await supabase.from ('users').select('*, cities(*), user_style(*, styles(*)), shop_id(*), guest_events(*, shop_id(*), city_id(*))').eq('role', 'artist').eq('pseudo_slug', slug)
+  return data?.[0] ?? null
+}
 
 export async function GetParticulier(id: string){
   const supabase = await createClient()

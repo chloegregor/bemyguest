@@ -33,7 +33,7 @@ export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: Cr
     const start_date = startDate?.toISOString().split("T")[0]
     const end_date = endDate?.toISOString().split("T")[0]
     const email = form.get('email') as string
-    
+
     if (!startDate || !endDate ){
       setLoading(false)
       setError('champs obligatoires manquants')
@@ -86,12 +86,12 @@ export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: Cr
   return (
     <div className='relative'>
       {loading &&
-        <div className="inset-0 absolute bg-gray-50 z-50 flex items-center justify-center">
+        <div className="inset-0 absolute bg-[#cccc] z-50 flex items-center justify-center">
           <p>loading...</p>
         </div>
       }
-        <div className="flex flex-col border">
-          <p className="border self-end" onClick={() => onClose(false)}>
+        <div className="flex flex-col ">
+          <p className=" self-end" onClick={() => onClose(false)}>
             x
           </p>
           <p>Créer un guest</p>
@@ -99,9 +99,9 @@ export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: Cr
             <p className="text-red">{error}</p>
 
           }
-          <form onSubmit={handleSubmit}>
-            <div className=" flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
+          <form onSubmit={handleSubmit} className='flex flex-col'>
+            <div className=" flex flex-col gap-5 items-center">
+              <div className="flex flex-col gap-2 ">
                 <label htmlFor="start_date">Date de début</label>
                 <DatePickerDemo value ={startDate ?? undefined } retreiveDate={(date:Date | null) => {setStartDate(date)}}/>
               </div>
@@ -147,7 +147,7 @@ export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: Cr
                   </div>
                 }
             </div>
-            <button type='submit'>Créer</button>
+            <button type='submit' className='self-end'>Créer</button>
           </form>
 
         </div>

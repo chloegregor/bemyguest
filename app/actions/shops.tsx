@@ -29,7 +29,7 @@ export async function getShopBySlug(slug: string){
   const supabase = await createClient()
   const {data} = await supabase.from ('shops').select
   ('*, owner:users!shops_owner_id_fkey (auth_id), guest_events(*, user_id(*)),  artists:users!users_shop_id_fkey(*), cities(*)')
-  .eq('shop_slug', slug).neq('guest_events.status','pending').gte('guest_events.end_date', new Date().toISOString())
+  .eq('shop_slug', slug)
 
   return data?.[0] ?? null
 }

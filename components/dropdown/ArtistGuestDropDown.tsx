@@ -55,7 +55,7 @@ export default function GuestDropDown({data, user_id, slug}: {data: any, user_id
   const categories = ["guests en cours et à venir", "guests à valider", "guests en attente "]
 
   return(
-    <div className="flex flex-col h-fit gap-5 w-full  ">
+    <div className="flex flex-col h-fit gap-0 w-full  ">
       <div className="relative w-[300px] font  ">
         {notification > 0 &&
           <span className="absolute -top-5 -right-5  border rounded-full w-5 h-5 flex items-center justify-center">{notification > 0 ? notification : ""}</span>
@@ -70,9 +70,9 @@ export default function GuestDropDown({data, user_id, slug}: {data: any, user_id
           <div className="cursor-pointer" onClick={() => setClicked(!clicked)}><ChevronDown/></div>
         </div>
         { clicked &&
-          <div className=" absolute z-50  grey top-full w-full border-r border-l border-t ">
+          <div className=" absolute z-50 grey top-full w-full border-r border-l border-t ">
             {categories.map((cat:string, index) =>
-              <div key={index} className={` flex gap-2 cursor-pointer border-b p-2 hover:text-[#ed0a0a] ${index === selected ? "hidden" : ""}`}onClick={()=>{setSelected(index); setClicked(false)}}>
+              <div key={index} className={` flex gap-2 cursor-pointer border-b p-2 hover: ${index === selected ? "hidden" : ""}`}onClick={()=>{setSelected(index); setClicked(false)}}>
                 <p>{cat}</p>
                 {cat === "guests à valider" && notification > 0 &&
                   <p className="text-[#f0eeea] border  rounded-full w-5 h-5 flex items-center justify-center">
@@ -85,16 +85,16 @@ export default function GuestDropDown({data, user_id, slug}: {data: any, user_id
         }
       </div>
       {guests_list && guests_list.map((event, index) =>
-        <div key={index} className={` p-2 border w-full flex items-center  ${selected === 2 ? "text-gray-500" : ""}`}>
+        <div key={index} className={` grey border-t p-2  w-full flex items-center  ${selected === 2 ? "text-gray-500" : ""}`}>
           <div className={`flex justify-between items-center w-full`}>
-            <div className="flex gap-2 text-[0.9em] items-center ">
+            <div className="flex gap-2 text-[0.9em] items-center  ">
               <p>{formDate(event.start_date)}</p>
               <MoveRight size={16}/>
               <p>{formDate(event.end_date)}</p>
             </div>
-            <div className="flex gap-2">
-              <Link href={`/shop/${event.shop_id.shop_slug}`}><p  className=" w-[250px] truncate">{`${event.shop_id.shop_name}`}</p></Link>
-              <Link href={`/${event.city_id.country_slug}/${event.city_id.city_slug}`}>|  {event.city_id.city_name}</Link>
+            <div className="flex gap-2 ">
+              <Link href={`/shop/${event.shop_id.shop_slug}`} className="h-fit"><p  className=" w-[150px] truncate">{`${event.shop_id.shop_name}`}</p></Link>
+              <Link href={`/${event.city_id.country_slug}/${event.city_id.city_slug}`} className="  h-fit"><p className=" ">{` ${event.city_id.city_name}`}</p></Link>
             </div>
           </div>
 
@@ -110,6 +110,9 @@ export default function GuestDropDown({data, user_id, slug}: {data: any, user_id
 
 
         </div> )}
+        {guests_list.length === 0 &&
+          <p>Cette section est vide</p>
+        }
     </div>
   )
 }
