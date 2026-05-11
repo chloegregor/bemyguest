@@ -15,16 +15,16 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const user = data?.claims
   const connected_user_id = user?.sub
   const artist_data = await GetUserBySlug(artist)
-  const artist_auth_id = artist_data?.[0]?.auth_id
-  const artist_id = artist_data?.[0]?.id
-  console.log("data", artist_data)
+  const artist_auth_id = artist_data?.auth_id
+  const artist_id = artist_data?.id
   const is_connected = connected_user_id === artist_auth_id
-  const pseudo = artist_data?.[0]?.pseudo
-  const city = artist_data?.[0]?.cities.city_name
-  const city_slug = artist_data?.[0]?.cities.city_slug
-  const shop = artist_data?.[0]?.shop_id?.shop_name
-  const shop_slug = artist_data?.[0]?.shop_id?.shop_slug
-  const img = artist_data?.[0]?.illustration
+  console.log("is connecte", user)
+  const pseudo = artist_data?.pseudo
+  const city = artist_data?.cities.city_name
+  const city_slug = artist_data?.cities.city_slug
+  const shop = artist_data?.shop_id?.shop_name
+  const shop_slug = artist_data?.shop_id?.shop_slug
+  const img = artist_data?.illustration
   const validated = artist_data?.guest_events.filter((guest) => guest.status === 'validated') ?? []
   const not_confirmed = artist_data?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'artist') ?? []
   const events = [...validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))

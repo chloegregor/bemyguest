@@ -13,13 +13,16 @@ import { Trash } from 'lucide-react';
 
 interface guestEvents {
   shop_id?: {
+    id:string,
     shop_name: string,
     shop_slug: string
   }
   user_id?:{
+    id: string,
     pseudo: string,
     pseudo_slug: string
   },
+  id: string
   start_date: string,
   end_date: string,
   status: string,
@@ -66,12 +69,11 @@ export default function GuestDropDown({events, shop_id, user_id, slug, }: dropDo
 
   },[shop_id, events])
 
-  const handleClick = async (else_id:string, status:string) => {
-    const primary = user_id! ?? shop_id!
-    await ValidateGuest(primary, else_id, status, slug)
+  const handleClick = async (id:string, status:string) => {
+
+   await ValidateGuest(id, status, slug)
    await fetch()
-   setSelected(0)
-    router.refresh()
+
   }
 
 
@@ -110,7 +112,7 @@ export default function GuestDropDown({events, shop_id, user_id, slug, }: dropDo
         }
       </div>
       {guests_list && guests_list.map((event, index) =>
-        <div key={index} className={` p-2 border w-full flex items-center  ${selected === 2 ? "text-gray-500" : ""}`}>
+        <div key={index} className={` p-2 border w-full flex items-center`}>
           <div className={`flex justify-between items-center flex-1`}>
             <div className="flex gap-2 text-[0.9em] items-center ">
               <p>{formDate(event.start_date)}</p>
@@ -127,10 +129,15 @@ export default function GuestDropDown({events, shop_id, user_id, slug, }: dropDo
 
             {selected === 1 &&
             <div className="flex gap-5 ml-[4em]">
-              <button onClick={() => handleClick(event.user_id?.id ?? event.shop_id?.id, "validated")}><Check size={20} color="#39eb14" /></button>
-              <button onClick={() => handleClick(event.user_id?.id ?? event.shop_id?.id, "deleted")}><Trash size={20} color="#ed0a0a" /></button>
+              <button onClick={() => handleClick(event.id, "validated")}><Check size={20} color="#39eb14" /></button>
+              <button onClick={() => handleClick(event.id, "deleted")}><Trash size={20} color="#ed0a0a" /></button>
             </div>
             }
+            <div className="flex gap-5 ml-[4em]">
+              <button onClick={() => handleClick(event.id, "deleted")}><Trash size={20} color="#ed0a0a" /></button>
+            </div>
+
+
 
 
 

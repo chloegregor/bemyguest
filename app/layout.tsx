@@ -32,15 +32,17 @@ export default function RootLayout({
   return (
     <html lang="fr" className={cn("font-sans", inter.variable)}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col p-2 h-screen  `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen w-screen `}
       >
-        <header>
-          <Header></Header>
-        </header>
-        <div className="mt-[1em]  flex justify-center">
-          <Form type={"city"}></Form>
+        <div className="fixed px-5 pb-5 w-full border bg-[#cccf] ">
+          <header>
+            <Header></Header>
+          </header>
+          <div className="mt-[1em]  flex justify-center">
+            <Form type={"city"}></Form>
+          </div>
         </div>
-        <div className=" flex flex-col flex-1 pt-10">
+        <div className=" flex flex-col flex-1 pt-40 ">
           {children}
         </div>
         <footer>

@@ -59,9 +59,9 @@ export async function getGuestClientFromArtist(user_id: string){
   return data ?? null
 }
 
-export async function ValidateGuest(shop_id: string, user_id:string, status: string, slug:string){
+export async function ValidateGuest(id: string,  status: string, slug:string){
   const supabase = await createClient()
-  const {data, error} = await supabase.from('guest_events').update({status: status}).eq('shop_id', shop_id).eq('user_id', user_id)
+  const {data, error} = await supabase.from('guest_events').update({status: status}).eq('id', id)
   revalidatePath(`/shop/${slug}`)
 }
 
