@@ -5,6 +5,7 @@ import { SingUpData } from '@/types'
 import { retrieveShop, UpdateShop } from './shops'
 import { retrieveCity } from './cites'
 import { CreateUser } from './users'
+import { CreateResidency } from './residencies'
 
 
 export async function CreateAuthUser(email: string, password:string){
@@ -90,11 +91,31 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         shop_id: shop_id,
         city_id: city_id,
       }
+
       const new_user = await CreateUser(user_data)
       if (!new_user) {
 
         return {error: "erreur lors de la creation du profil"}
       }
+
+
+      if ( data.role === "artist" && data.resident && shop_id){
+
+        const residency_form = {
+          user_id : new_user.id,
+          shop_id : shop_id,
+          status: "pending"
+        }
+
+        const new_residency = await CreateResidency(residency_form)
+        console.log(new_residency)
+        if (!new_residency){
+          return {error: "erreur lors de la création du lien etre le user et le shop"}
+        }
+      }
+
+
+
 
       if (data.role === "shop" && data.shopSlug && data.shopName && data.shopPlaceId ){
         const shop = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.email)

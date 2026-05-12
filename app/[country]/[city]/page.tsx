@@ -1,7 +1,7 @@
 import {createClient} from '@/lib/supabase/server'
 import List from '@/components/lists/List'
 import Link from 'next/link'
-import { notFound, } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import RadiusButton from '@/components/radius/button'
 import NavBar from '@/components/nav/navBar'
 

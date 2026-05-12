@@ -34,7 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen w-screen `}
       >
-        <div className="fixed px-5 pb-5 w-full border bg-[#cccf] ">
+        <div className="fixed px-5 pb-5 w-full border bg-[#cccf] z-100">
           <header>
             <Header></Header>
           </header>
@@ -42,7 +42,7 @@ export default function RootLayout({
             <Form type={"city"}></Form>
           </div>
         </div>
-        <div className=" flex flex-col flex-1 pt-40 ">
+        <div className=" flex flex-col flex-1 mt-[10em] p-2">
           {children}
         </div>
         <footer>

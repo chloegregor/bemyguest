@@ -3,9 +3,11 @@ import { GetUserBySlug } from '@/app/actions/users'
 import Image from 'next/image'
 import Link from 'next/link'
 import AddModale from '@/components/modale/AddModale'
-import GuestDropDown from '@/components/dropdown/guestDrop'
+import DropDown from '@/components/dropdown/dataDropDown'
 import { formDate } from '@/app/utils/date'
 import { MoveRight } from 'lucide-react';
+import { notFound } from 'next/navigation'
+
 
 
 export default async function Artist({ params }: { params: Promise<{ artist: string }> }) {
@@ -18,7 +20,6 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const artist_auth_id = artist_data?.auth_id
   const artist_id = artist_data?.id
   const is_connected = connected_user_id === artist_auth_id
-  console.log("is connecte", user)
   const pseudo = artist_data?.pseudo
   const city = artist_data?.cities.city_name
   const city_slug = artist_data?.cities.city_slug
@@ -29,6 +30,10 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const not_confirmed = artist_data?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'artist') ?? []
   const events = [...validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
 
+
+  if(!artist_data){
+    notFound()
+  }
 
 
   return (
@@ -50,8 +55,8 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
           <div className="flex relative">
             {is_connected &&
               <div className="w-full ">
-                <GuestDropDown events={events} user_id={artist_id} slug={artist}/>
-                <AddModale user_id={artist_id}></AddModale>
+                <DropDown data_props={events} user_id={artist_id} slug={artist} type={'guest'}/>
+                <AddModale user_id={artist_id} type={"guest"}></AddModale>
               </div>
             }
 

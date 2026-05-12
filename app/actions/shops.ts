@@ -28,7 +28,7 @@ export async function getShopSlugByOwner(id: string){
 export async function getShopBySlug(slug: string){
   const supabase = await createClient()
   const {data} = await supabase.from ('shops').select
-  ('*, owner:users!shops_owner_id_fkey (auth_id), guest_events(*, user_id(*)),  artists:users!users_shop_id_fkey(*), cities(*)')
+  ('*, owner:users!shops_owner_id_fkey (auth_id), guest_events(*, user_id(*)),  artists:residencies(status, users(pseudo, pseudo_slug)), cities(*)')
   .eq('shop_slug', slug)
 
   return data?.[0] ?? null

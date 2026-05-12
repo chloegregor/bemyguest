@@ -66,6 +66,8 @@ export async function ValidateGuest(id: string,  status: string, slug:string){
 }
 
 
+
+
 export async function handleForm(form: FormProps){
 
   if(!form.start_date || !form.end_date ){
