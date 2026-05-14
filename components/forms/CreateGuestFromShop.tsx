@@ -69,16 +69,13 @@ export default function CreateGuestFromShop({ shop_id, city_id, onClose, onSucce
   }
 
   return(
-    <div className='relative'>
+    <div className=''>
       {loading &&
         <div className="inset-0 absolute bg-gray-50 z-50 flex items-center justify-center">
           <p>loading...</p>
         </div>
       }
         <div className="flex flex-col ">
-          <p className="border self-end" onClick={() => onClose(false)}>
-            x
-          </p>
           <p>Créer un guest</p>
           {error  &&
             <p className="text-red">{error}</p>

@@ -18,7 +18,7 @@ export default function AddModale({user_id, shop_id, city_id, type}: {user_id?: 
   console.log(open)
 
   return(
-    <div className=" h-fit absolute left-100 -top-5">
+    <div className=" h-fit absolute left-100 -top-5 ">
       <button onClick={()=>setOpen(true)}>
         <div className="flex p-2 polygon">
           <Plus/>
@@ -26,7 +26,10 @@ export default function AddModale({user_id, shop_id, city_id, type}: {user_id?: 
       </button>
       {open && type === "guest" &&
         <div className='fixed inset-0 backdrop-blur-sm flex items-center justify-center'>
-          <div className='p-5 border border-[#2f0c71]  bg-[#cccc] w-[30%]'>
+          <div className='p-5 border border-[#2f0c71]  bg-[#cccc] w-[30%] relative flex flex-col'>
+          <p className=" self-end" onClick={() => setOpen(false)}>
+            x
+          </p>
             {user_id &&
               <CreateGuestFromArtist user_id={user_id} onSuccess={handleSuccess} onClose={(open: boolean) => {
                 setOpen(open)

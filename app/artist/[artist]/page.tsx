@@ -1,6 +1,7 @@
 import {createClient} from '@/lib/supabase/server'
 import { GetUserBySlug } from '@/app/actions/users'
 import Image from 'next/image'
+import EditModale from '@/components/modale/editModale'
 import Link from 'next/link'
 import AddModale from '@/components/modale/AddModale'
 import DropDown from '@/components/dropdown/dataDropDown'
@@ -19,12 +20,11 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const artist_data = await GetUserBySlug(artist)
   const artist_auth_id = artist_data?.auth_id
   const artist_id = artist_data?.id
+  const instagram = artist_data?.insta
   const is_connected = connected_user_id === artist_auth_id
   const pseudo = artist_data?.pseudo
-  const city = artist_data?.cities.city_name
-  const city_slug = artist_data?.cities.city_slug
-  const shop = artist_data?.shop_id?.shop_name
-  const shop_slug = artist_data?.shop_id?.shop_slug
+  const residency = artist_data?.residencies?.[0]
+  const city = residency?.cities
   const img = artist_data?.illustration
   const validated = artist_data?.guest_events.filter((guest) => guest.status === 'validated') ?? []
   const not_confirmed = artist_data?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'artist') ?? []
@@ -37,17 +37,18 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
 
 
   return (
-    <div className="  flex flex-col flex-1">
-      <div>
-        <p>{pseudo}</p>
-        <Link href={`/shop/${shop_slug}`}><p>{shop}</p></Link>
-        <Link href={`/${city_slug}`}><p>{city}</p></Link>
+    <div className="flex flex-col flex-1 relative ">
+      <div className="border flex flex-col gap-5">
+        <EditModale id={artist_id} Artistpseudo={pseudo} instagram={instagram} residency={residency} city={city}/>
+        <h1>{pseudo}</h1>
+        <Link href={`/shop/${residency.shops?.shop_slug}`}><h2>{residency.shops?.shop_name}</h2></Link>
+        <Link href={`/${residency.cities.city_slug}`}><h2>{residency.cities.city_name}</h2></Link>
       </div>
       <div className=" flex-1 flex gap-10 ">
         <div className="flex-1 flex flex-col ">
           <h2>Gallerie</h2>
           <div className=''>
-            <Image src={"https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"} alt="illustration"  width="400" height="800" className="h-full w-auto"/>
+
           </div>
         </div>
 
@@ -59,7 +60,6 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
                 <AddModale user_id={artist_id} type={"guest"}></AddModale>
               </div>
             }
-
           </div>
           {!is_connected &&
             <div>

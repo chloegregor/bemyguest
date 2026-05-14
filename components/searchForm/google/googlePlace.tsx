@@ -3,6 +3,7 @@ import { useState, useRef } from 'react'
 interface GooglePlaceProps {
   setObject: (nameSlug: string, placeId:string, name:string) => void
   type: string
+  present_data?: string | null
 }
 
 interface PlaceSuggestion {
@@ -14,9 +15,9 @@ interface PlaceSuggestion {
   }
 }
 
-export default function GooglePlace({setObject, type}: GooglePlaceProps) {
+export default function GooglePlace({setObject, type, present_data}: GooglePlaceProps) {
   const placeholder = type ==="city" ? 'Chercher une ville' : "Chercher un shop"
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(present_data ?? '')
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
@@ -48,7 +49,7 @@ export default function GooglePlace({setObject, type}: GooglePlaceProps) {
   return (
     <div className='relative w-[200px] '>
       <input className="border w-full"
-        value={query}
+        value={query ?? present_data}
         onChange={handleInput}
         placeholder={placeholder}
       />
@@ -70,7 +71,7 @@ export default function GooglePlace({setObject, type}: GooglePlaceProps) {
                   .trim()
                   .replace(/\s+/g, '-')                // espaces → tirets
                   .replace(/-+/g, '-')                 // fusionne les tirets consécutifs
-                  .replace(/^-|-$/g, '') 
+                  .replace(/^-|-$/g, '')
                   setQuery(label)
                   setObject(name_slug, placeId, name)
                   setSuggestions([])

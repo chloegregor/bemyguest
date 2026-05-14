@@ -10,6 +10,13 @@ interface residency_form {
   status: string
 }
 
+interface upsertResidency {
+  id?: string,
+  user_id: string,
+  shop_id: string,
+  status: string
+}
+
 
 export async function CreateResidency(form:residency_form){
   const supabase = await createClient()
@@ -31,3 +38,12 @@ export async function ValidateResidency(id:string, status: string , slug:string)
   const {data, error} =  await supabase.from('residencies').update({status: status}).eq("id", id)
   revalidatePath(`/shop/${slug}`)
 }
+
+
+export async function upsertResidency(form:upsertResidency){
+  const supabase = await createClient()
+  const {data, error} = await supabase.from('residencies').upsert(form, {onConflict:'id'}).select()
+  return data?.[0] ?? error
+
+}
+

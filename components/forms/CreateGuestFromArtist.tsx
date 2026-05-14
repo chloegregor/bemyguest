@@ -91,9 +91,6 @@ export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: Cr
         </div>
       }
         <div className="flex flex-col ">
-          <p className=" self-end" onClick={() => onClose(false)}>
-            x
-          </p>
           <p>Créer un guest</p>
           {error  &&
             <p className="text-red">{error}</p>
