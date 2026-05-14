@@ -13,10 +13,10 @@ async function getData(param: string){
 
   const [g, a, s] = await Promise.all([
     supabase.from ('guest_events').select(`*,users(pseudo, pseudo_slug, insta, user_style(style_id, styles(name))),shops(*), cities(*)`).gte('end_date', today).eq('status', "validated").limit(10),
-    supabase.from ('users').select('*, shop:shop_id(*), cities(*)').eq('role', 'artist').eq('status', "validated").limit(10),
+    supabase.from ('users').select('*, residencies(*, cities(*), shops(*))').eq('role', 'artist').eq('status', "validated").limit(10),
     supabase.from ('shops').select('*, cities(*)').limit(10)
   ] )
-  console.log(a.error)
+
   return { guests : g.data || [],
           artists: a.data || [],
           shops: s.data || []

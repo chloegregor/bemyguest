@@ -26,9 +26,9 @@ async function getCity(country: string, city_slug: string){
 async function getData(city_id: number){
   const supabase = await createClient()
   const [g, s, a] = await Promise.all([
-    supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))').eq('city_id', city_id),
+    supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').eq('city_id', city_id),
     supabase.from('shops').select('*, cities(*)').eq('city_id', city_id),
-    supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').eq('city_id', city_id)
+    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))').eq('role', 'artist').eq('city_id', city_id)
   ] )
 
   return {
@@ -60,7 +60,7 @@ async function getNearByData(city: CityType, radius: string){
   const [g, s, a] = await Promise.all([
     supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds),
     supabase.from('shops').select('*, cities(*)').in('city_id', cityIds),
-    supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('city_id', cityIds)
+    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('city_id', cityIds)
   ])
 
   return {
@@ -82,6 +82,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
   const cityname = city_data.city.city_name
   const city_country = city_data.city.country_name
   const data = radius && radius != "0" ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
+  console.log("data tout", data)
   const today = new Date().toISOString().split('T')[0]
   const futur_events = data.guests?.filter((e) => e.end_date >= today)
   const past_events = data.guests?.filter((e) => e.end_date < today || !e.end_date)

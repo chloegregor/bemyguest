@@ -42,7 +42,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
         <EditModale id={artist_id} Artistpseudo={pseudo} instagram={instagram} residency={residency} city={city}/>
         <h1>{pseudo}</h1>
         <Link href={`/shop/${residency.shops?.shop_slug}`}><h2>{residency.shops?.shop_name}</h2></Link>
-        <Link href={`/${residency.cities.city_slug}`}><h2>{residency.cities.city_name}</h2></Link>
+        <Link href={`/${city.country_slug}/${residency.cities.city_slug}`}><h2>{residency.cities.city_name}</h2></Link>
       </div>
       <div className=" flex-1 flex gap-10 ">
         <div className="flex-1 flex flex-col ">

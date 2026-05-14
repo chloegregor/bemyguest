@@ -21,7 +21,7 @@ async function getData(page: number, city_id: number){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)', {count: "exact"}).eq('role', 'artist').eq('city_id', city_id).range(from, to)
+  const {data, count} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))', {count: "exact"}).eq('role', 'artist').eq('city_id', city_id).range(from, to)
   return {data: data,
           count: count
   }
@@ -49,7 +49,7 @@ async function getNearByData(page: number, city: CityType, radius: string){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from('users').select('*, cities(*), user_style(*, styles(*)), shop:shop_id(*)',  {count: "exact"}).eq('role', 'artist').in('city_id', cityIds).range(from, to)
+  const {data, count} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))',  {count: "exact"}).eq('role', 'artist').in('city_id', cityIds).range(from, to)
 
 
   return {data: data,

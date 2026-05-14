@@ -25,10 +25,7 @@ interface FormEditArtistProps {
   pseudo: string
   insta?: string
   pseudo_slug: string
-  city_id: string
-  shop_id?: string
-  shop_name?: string
-  shop_slug?: string
+
 
 }
 
@@ -56,14 +53,14 @@ export async function CreateUser(form:FormProps){
 
 export async function GetUser(auth_id: string){
   const supabase = await createClient()
-  const {data: profile} =  await supabase.from ('users').select('*, shop:shop_id(*), cities(*)').eq('auth_id', auth_id)
+  const {data: profile} =  await supabase.from ('users').select('*, residencies(*, shops(*), cities(*))').eq('auth_id', auth_id)
   return profile?.[0] ?? null
 
 }
 
 export async function GetUserBySlug(slug: string){
   const supabase = await createClient()
-  const {data} = await supabase.from ('users').select('*, cities(*), user_style(*, styles(*)), residencies(*, cities(*), shops(*)), guest_events(*, shop_id(*), city_id(*))').eq('role', 'artist').eq('pseudo_slug', slug)
+  const {data} = await supabase.from ('users').select('*, user_style(*, styles(*)), residencies(*, cities(*), shops(*)), guest_events(*, shop_id(*), city_id(*))').eq('role', 'artist').eq('pseudo_slug', slug)
   return data?.[0] ?? null
 }
 
@@ -117,15 +114,12 @@ export async function handleArtistForm(data : handleEditArtistProps){
 
     }
 
-      console.log("shop id", shop_id)
       const user_data: FormEditArtistProps = {
         role: "artist",
         id: data.id,
         pseudo: data.pseudo,
         pseudo_slug: data.pseudoSlug,
         insta : data.instagram,
-        shop_id: shop_id,
-        city_id: city_id,
       }
 
       const updated_user = await EditArtist(user_data)

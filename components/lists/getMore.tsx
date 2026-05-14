@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation'
 interface Props {
   key?: string
   category: string,
-  initial_data?: any,
+  initial_data: [] | null,
   total?: number,
   city_id?: number,
   radius?: string,

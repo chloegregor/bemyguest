@@ -42,7 +42,7 @@ export default function RootLayout({
             <Form type={"city"}></Form>
           </div>
         </div>
-        <div className=" flex flex-col flex-1 mt-[10em] p-2">
+        <div className=" flex flex-col flex-1 mt-[12em] p-2">
           {children}
         </div>
         <footer>
