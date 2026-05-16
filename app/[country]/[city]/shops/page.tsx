@@ -79,7 +79,6 @@ export default async  function Shops( { params, searchParams}: { params: Promise
       </nav>
       {shops?.length > 0 ?
       <div>
-        <h2>{`Shops à ${ville}`}</h2>
         <div className="grid grid-cols-5 gap-5">
           <List data={shops} type={'shops'}/>
         </div>

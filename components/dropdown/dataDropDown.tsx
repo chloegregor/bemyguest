@@ -1,7 +1,7 @@
 'use client'
 import {useState, useEffect} from 'react'
 import { GetGuestClient, getGuestClientFromArtist } from '@/app/actions/guests';
-import { GetClientResidency } from '@/app/actions/residencies';
+import { GetPendingResidencies} from '@/app/actions/residencies';
 import { ValidateGuest } from '@/app/actions/guests';
 import { ValidateResidency } from '@/app/actions/residencies';
 import { ChevronDown } from 'lucide-react';
@@ -13,7 +13,7 @@ import { Trash } from 'lucide-react';
 import ArtistShopCard from '../card/artistShopCard';
 
 
-interface Residents{
+interface Residents {
   id: string,
   status: string,
   shop_id: string,
@@ -80,7 +80,7 @@ export default function DropDown({data_props, shop_id, user_id, slug, type }: dr
       }
       if (type === 'residency'){
 
-         ToConfirm = await GetClientResidency(shop_id!) ?? []
+         ToConfirm = await GetPendingResidencies(shop_id!) ?? []
       }
       setToValidate(ToConfirm)
       setNotification(ToConfirm.length)
@@ -106,7 +106,7 @@ export default function DropDown({data_props, shop_id, user_id, slug, type }: dr
 
   const list = selected === 0 ? data : toValidate
 
-  const categories = type === 'guest' ? ["guests en cours ou à venir", "guests à valider"] : ["Artistes résident.es", "Artistes à valider"]
+  const categories = type === 'guest' ? ["Guests en cours ou à venir", "Guests à valider"] : ["Artistes résident.es", "Artistes à valider"]
 
   return(
     <div className="flex flex-col h-fit gap-5 w-full  ">
@@ -116,7 +116,7 @@ export default function DropDown({data_props, shop_id, user_id, slug, type }: dr
         }
         <div className="flex  p-2 w-[350px] items-center justify-between">
           <div >
-            <h3 className='text-[1.4em]' >
+            <h3 className='text-[1.2em]' >
             { categories[selected]}
             </h3>
           </div>
@@ -175,18 +175,18 @@ export default function DropDown({data_props, shop_id, user_id, slug, type }: dr
 
             }else{
               return(
-                <div key={index} className="flex flex-col">
+                <div key={index} className="flex flex-col items-center">
                     <div >
                       <ArtistShopCard artist={event.users}/>
                     </div>
                     {selected === 1 &&
-                      <div className="flex gap-5 ml-[4em]">
+                      <div className="flex gap-5">
                         <button className="" onClick={() => handleClick(event.id, "validated")}><Check size={25} color="#1dbf1f" /></button>
                         <button onClick={() => handleClick(event.id, "deleted")}><Trash size={25} color="#ed0a0a" /></button>
                       </div>
                       }
                       {selected === 0 &&
-                      <div className="flex gap-5 ml-[4em]">
+                      <div className="flex gap-5 ">
                         <button onClick={() => handleClick(event.id, "deleted")}><Trash size={20} color="#ed0a0a" /></button>
                       </div>
                     }

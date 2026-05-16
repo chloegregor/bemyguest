@@ -2,7 +2,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { retrieveShop } from "./shops"
 import { retrieveCity } from "./cites"
-import { upsertResidency } from "./residencies"
+import { upsertResidency, GetResidencyShop, GetResidencyCity } from "./residencies"
 import Form from "@/components/searchForm/form/formCity"
 
 
@@ -80,8 +80,11 @@ export async function findUser(email:string){
 
 
 export async function handleArtistForm(data : handleEditArtistProps){
+
   let shop_id = null
   let city_id = null
+
+  try {
 
     if ( !data.pseudo && !(data.cityPlaceId || data.shopPlaceId)){
 
@@ -89,7 +92,7 @@ export async function handleArtistForm(data : handleEditArtistProps){
     }
 
     if (data.resident && data.shopSlug && data.shopName && data.shopPlaceId) {
-      const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.owner_email)
+      const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.owner_email )
       if (!result){
         return  {error: 'erreur a la récupération du shop'}
       }
@@ -123,16 +126,19 @@ export async function handleArtistForm(data : handleEditArtistProps){
       }
 
       const updated_user = await EditArtist(user_data)
-      console.log(updated_user)
 
       if (updated_user.error) {
-        console.log("erreur creation", updated_user.error)
         return {error: "erreur lors de la creation du profil"}
       }
 
-
-
         if(shop_id){
+          const present_shop_id = await GetResidencyShop(updated_user.id)
+          console.log("present shop", present_shop_id)
+
+          if (present_shop_id?.shop_id === shop_id){
+            return {success: 'ok', slug: updated_user.pseudo_slug}
+          }
+
           const residency_form = {
             id: data.residency_id,
             user_id : updated_user.id,
@@ -163,7 +169,11 @@ export async function handleArtistForm(data : handleEditArtistProps){
         }
 
 
-      return {success: "ok"}
+      return {success: 'ok', slug: updated_user.pseudo_slug}
+  } catch (err){
+    return {error: err instanceof Error ? err.message : "erreur inconnie"}
+  }
+
 }
 
 

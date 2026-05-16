@@ -21,8 +21,8 @@ async function getData(page: number, city_id: number){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))', {count: "exact"}).eq('role', 'artist').eq('city_id', city_id).range(from, to)
-  return {data: data,
+  const {data, count, error} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))', {count: "exact"}).eq('role', 'artist').eq('residencies.city_id', city_id).range(from, to)
+  return {data: data ?? error,
           count: count
   }
 }
@@ -49,7 +49,7 @@ async function getNearByData(page: number, city: CityType, radius: string){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))',  {count: "exact"}).eq('role', 'artist').in('city_id', cityIds).range(from, to)
+  const {data, count} = await supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))',  {count: "exact"}).eq('role', 'artist').in('residencies.city_id', cityIds).range(from, to)
 
 
   return {data: data,
@@ -63,8 +63,9 @@ export default async  function Artists( { params, searchParams }: { params: Prom
   const {radius} = await searchParams
   const supabase = await createClient()
   const {data: city} = await supabase.from('cities').select('id, city_name, country_name, lat, lng').eq('country_slug', country).eq('city_slug', city_params)
-  const city_id = city[0]?.id
+  const city_id = city?.[0]?.id
   const {data: artists, count} =  radius && radius != "0" ? await getNearByData(1, city[0] as CityType, radius) : await getData(1, city_id)
+  console.log("artist", city_id)
   console.log("count", count)
   const cityname = city?.[0]?.city_name
   const ville = cityname ? cityname : city
@@ -79,9 +80,8 @@ export default async  function Artists( { params, searchParams }: { params: Prom
       <nav>
         <NavBar country={country} city={city_params} />
       </nav>
-      {artists.length > 0 ?
+      {artists?.length  > 0 ?
       <div>
-        <h1>{`Artistes résidents à ${ville}`}</h1>
         <div className="grid grid-cols-5 gap-5">
           <List data={artists} type={'artists'}/>
         </div>

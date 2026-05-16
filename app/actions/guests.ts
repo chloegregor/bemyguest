@@ -140,7 +140,7 @@ export async function handleForm(form: FormProps){
     }else {
       user_id = found_artist.id
     }
-      created_by="shop"
+      created_by= "shop"
    }
 
   }

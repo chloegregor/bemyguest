@@ -6,6 +6,8 @@ import DropDown from '@/components/dropdown/dataDropDown'
 import Link from 'next/link'
 import { formDate } from '@/app/utils/date'
 import { MoveRight } from 'lucide-react';
+import { House } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { notFound } from 'next/navigation'
 
 
@@ -32,7 +34,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const not_confirmed = shop?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'shop') ?? []
   const events = [...events_validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
   const residents = shop?.artists
-  const  validated_residents = shop?.artists.filter((artist) => artist.status === "validated")
+  const  validated_residents = residents.filter((artist) => artist.status === "validated")
   console.log("resident", validated_residents)
 
   const is_connected = connected_user_id === shop_owner_id
@@ -43,9 +45,15 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
 
   return (
     <div className=" flex flex-col flex-1 gap-10" >
-      <div>
-        <h1 >{shopName}</h1>
-        <Link href={`/${country_slug}/${city_slug}`}><h2>{city}</h2></Link>
+      <div className="flex flex-col gap-5">
+        <div className='flex gap-2 items-center'>
+          <House/>
+          <h1 >{shopName}</h1>
+        </div>
+        <div className='flex gap-2 items-center' >
+          <MapPin/>
+          <Link href={`/${country_slug}/${city_slug}`}><h2>{city}</h2></Link>
+        </div >
       </div>
       <div className=" flex-1 flex flex-row gap-10 ">
 
@@ -63,9 +71,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
               {validated_residents?.map((artist,index)=> {
                 return (
                   <div key={index}>
-                    <Link href={`/artist/${artist.users.pseudo_slug}`}>
                       <ArtistCard artist={artist.users}/>
-                    </Link>
                   </div>
                 )
               })}
@@ -86,7 +92,7 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
           </div>
           { !is_connected &&
             <div className="flex flex-col gap-5 ">
-              <h2>Guests en cours et à venir</h2>
+              <h3 className='text-[1.2em] font'>Guests en cours et à venir</h3>
               <div className="border">
               { events_validated?.map((event, index) => {
                 return (

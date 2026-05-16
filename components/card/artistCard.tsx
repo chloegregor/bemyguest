@@ -2,10 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default function ArtistCard({artist}) {
-  console.log('artist in card', artist.residencies)
   const styles = artist.user_style?.map((style) => style.styles?.name)
-  const city = artist.residencies?.[0].cities
-  const shop = artist.residencies?.[0].shops
+  const city = artist.residencies?.[0]?.cities
+  const shop = artist.residencies?.[0]?.shops
   const cityname = city?.city_name
   const city_slug = city?.city_slug
   const country = city?.country_name

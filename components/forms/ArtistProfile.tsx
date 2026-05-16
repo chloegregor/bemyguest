@@ -21,6 +21,7 @@ interface CityProps {
 
 
 interface ArtistProps {
+  onSuccess :(slug: string) => void,
   id: string
   Artistpseudo: string,
   instagram?: string,
@@ -29,7 +30,7 @@ interface ArtistProps {
 }
 
 interface handleEditArtistProps {
-  id: string
+  id: string,
   pseudo: string,
   resident: boolean
   residency_id?: string
@@ -44,7 +45,7 @@ interface handleEditArtistProps {
 
 
 
-export default function ArtistProfile({id, Artistpseudo, instagram, residency, city}: ArtistProps){
+export default function ArtistProfile({onSuccess, id, Artistpseudo, instagram, residency, city}: ArtistProps){
   const [resident, setResident] = useState(residency?.shops?.shop_place_id ? true :  false)
   const [shopSlug, setShopSlug] = useState<string|null>(residency?.shops?.shop_slug ?? null)
   const [shopName, setShopName] = useState<string|null>(residency?.shops?.shop_name?? null)
@@ -93,14 +94,16 @@ export default function ArtistProfile({id, Artistpseudo, instagram, residency, c
 
     try {
       const updatedprofil = await handleArtistForm(form)
+      console.log("profile update", updatedprofil)
       if(updatedprofil.error){
         if(updatedprofil.error === "email"){
           setInvitation(true)
           return
         }
         setError(updatedprofil.error)
+        return
       }
-
+      onSuccess(updatedprofil.slug)
 
     }catch(err){
       setError(err instanceof Error ? err.message : "une erreur inconnue")

@@ -56,10 +56,10 @@ async function getNearByData(page: number, city: CityType, radius: string){
 export default async  function Artists( { params, searchParams}: { params: Promise<{ country:string, city: string }>, searchParams: Promise<{ radius: string }> }){
   const {country, city: city_params} = await params
   const {radius} = await searchParams
-  console.log("cityinartistspage", city_params)
   const supabase = await createClient()
   const {data: city} = await supabase.from('cities').select('id, city_name, lat, lng').eq('country_slug', country).eq('city_slug', city_params)
   const city_id = city[0]?.id
+  console.log("cityinartistspage", city_params)
   const cityname = city[0]?.city_name
   const {data: guests, count} = radius && radius !="0" ? await getNearByData(1, city[0] as CityType, radius) : await getData(1, city_id)
   console.log("data", guests)
@@ -78,7 +78,6 @@ export default async  function Artists( { params, searchParams}: { params: Promi
       {
         guests.length > 0 ?
         <div>
-          <h1>{`Les guests à ${cityname}`}</h1>
           <div className="grid grid-cols-5 gap-5">
             <List data={guests} type={'guests'}/>
           </div>

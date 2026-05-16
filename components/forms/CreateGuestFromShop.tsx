@@ -6,11 +6,10 @@ import { handleForm } from '@/app/actions/guests'
 interface CreateGuestProps{
   shop_id: string
   city_id: number
-  onClose: (open:boolean) => void
   onSuccess: ()=> void
 }
 
-export default function CreateGuestFromShop({ shop_id, city_id, onClose, onSuccess}: CreateGuestProps){
+export default function CreateGuestFromShop({ shop_id, city_id, onSuccess}: CreateGuestProps){
    const [loading, setLoading] = useState(false)
    const [error, setError] = useState<string | null>(null)
   const [startDate, setStartDate] = useState<Date | null>(null)

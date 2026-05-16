@@ -31,19 +31,21 @@ export default function AddModale({user_id, shop_id, city_id, type}: {user_id?: 
             x
           </p>
             {user_id &&
-              <CreateGuestFromArtist user_id={user_id} onSuccess={handleSuccess} onClose={(open: boolean) => {
-                setOpen(open)
-              }}/>
+              <CreateGuestFromArtist user_id={user_id} onSuccess={handleSuccess}/>
             }
             {shop_id && city_id &&
-              <CreateGuestFromShop city_id={city_id} shop_id={shop_id} onSuccess={handleSuccess} onClose={(open: boolean) => {
-                setOpen(open)}}/>
+              <CreateGuestFromShop city_id={city_id} shop_id={shop_id} onSuccess={handleSuccess} />
             }
           </div>
 
         </div>
       }
-      {open && type === 'residency'}
+      {open && type === 'residency' &&
+        <div className='fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50'>
+          <div className='p-5 border border-[#2f0c71]  bg-[#cccc] w-[30%] relative flex flex-col'>
+          </div>
+        </div>
+      }
     </div>
   )
 }

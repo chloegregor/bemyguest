@@ -88,8 +88,6 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         pseudo: data.pseudo,
         pseudo_slug: data.role === "particulier" ? auth_id.slice(0, 7) : data.pseudoSlug,
         insta : data.insta,
-        shop_id: shop_id,
-        city_id: city_id,
       }
 
       const new_user = await CreateUser(user_data)
@@ -99,11 +97,12 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
       }
 
 
-      if ( data.role === "artist" && data.resident && shop_id){
+      if ( data.role === "artist"){
 
         const residency_form = {
           user_id : new_user.id,
           shop_id : shop_id,
+          city_id:city_id,
           status: "pending"
         }
 

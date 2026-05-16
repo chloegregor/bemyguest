@@ -32,9 +32,9 @@ export default function EditModale({id, Artistpseudo, instagram, residency, city
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
-  const handleSuccess = () => {
+  const handleSuccessArtist = (slug:string) => {
     setOpen(false)
-    router.refresh()
+    router.push(`/artist/${slug}`)
 
   }
   console.log(open)
@@ -52,7 +52,7 @@ export default function EditModale({id, Artistpseudo, instagram, residency, city
           <p className=" self-end" onClick={() => setOpen(false)}>
             x
           </p>
-          <ArtistProfile id={id} Artistpseudo={Artistpseudo} instagram={instagram} residency={residency} city={city}/>
+          <ArtistProfile onSuccess={handleSuccessArtist}  id={id} Artistpseudo={Artistpseudo} instagram={instagram} residency={residency} city={city}/>
         </div>
       </div>
       }

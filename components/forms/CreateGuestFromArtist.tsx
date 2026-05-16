@@ -7,11 +7,10 @@ import { useRouter } from 'next/navigation'
 
 interface CreateGuestProps{
   user_id?: string
-  onClose: (open:boolean) => void
   onSuccess: ()=> void
 }
 
-export default function CreateGuestFromArtist({ user_id, onClose, onSuccess}: CreateGuestProps){
+export default function CreateGuestFromArtist({ user_id, onSuccess}: CreateGuestProps){
   const router = useRouter()
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)

@@ -28,7 +28,7 @@ async function getData(city_id: number){
   const [g, s, a] = await Promise.all([
     supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').eq('city_id', city_id),
     supabase.from('shops').select('*, cities(*)').eq('city_id', city_id),
-    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), user_style(*, styles(*))').eq('role', 'artist').eq('city_id', city_id)
+    supabase.from('users').select('*, residencies!inner(*, shops(*), cities(*)), user_style(*, styles(*))').eq('role', 'artist').eq('residencies.city_id', city_id)
   ] )
 
   return {
@@ -60,7 +60,7 @@ async function getNearByData(city: CityType, radius: string){
   const [g, s, a] = await Promise.all([
     supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds),
     supabase.from('shops').select('*, cities(*)').in('city_id', cityIds),
-    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('city_id', cityIds)
+    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('residencies.city_id', cityIds)
   ])
 
   return {
@@ -82,7 +82,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
   const cityname = city_data.city.city_name
   const city_country = city_data.city.country_name
   const data = radius && radius != "0" ? await getNearByData(city_data.city as CityType, radius) : await getData(city_id)
-  console.log("data tout", data)
+  console.log("data tout", city_id)
   const today = new Date().toISOString().split('T')[0]
   const futur_events = data.guests?.filter((e) => e.end_date >= today)
   const past_events = data.guests?.filter((e) => e.end_date < today || !e.end_date)
@@ -128,7 +128,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   </div> : data.guests.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de guest référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${country}/${cityname}/guests?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${country}/${city_params}/guests?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5  overflow-x-auto">
@@ -171,7 +171,7 @@ export default async function City ({ params, searchParams }: { params: Promise<
                   : data.shops.length === 0 ?
                   <div>
                     <p className="text-[0.8em] text-gray-500">Pas de shop référencé à {cityname} pour le moment.</p>
-                    <Link href={`/${country}/${cityname}/shops?radius=50`}><p >Voir plus</p>
+                    <Link href={`/${country}/${city_params}/shops?radius=50`}><p >Voir plus</p>
                   </Link>
                   </div> :
                   <div className="flex gap-5 items-center  overflow-x-auto">
