@@ -31,7 +31,11 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const validated = artist_data?.guest_events.filter((guest) => guest.status === 'validated') ?? []
   const not_confirmed = artist_data?.guest_events.filter((guest) => guest.status === 'pending' && guest.created_by === 'artist') ?? []
   const events = [...validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
-
+  const artist_for_edit_form = {
+    id: artist_id,
+    insta: artist_data.instagram,
+    pseudo: pseudo
+  }
 
   if(!artist_data){
     notFound()
@@ -42,7 +46,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
     <div className="flex flex-col flex-1 gap-5">
       <div className=" flex flex-col gap-5 relative ">
         {is_connected &&
-          <EditModale id={artist_id} Artistpseudo={pseudo} instagram={instagram} residency={residency} city={city}/>
+          <EditModale artist={artist_for_edit_form} residency={residency} city={city}/>
         }
         <h1>{pseudo}</h1>
         <div>

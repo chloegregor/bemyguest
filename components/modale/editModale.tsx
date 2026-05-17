@@ -3,6 +3,7 @@ import {useState} from 'react'
 import { Pencil } from 'lucide-react'
 import {useRouter} from 'next/navigation'
 import ArtistProfile from '../forms/ArtistProfile'
+import ShopProfil from '../forms/ShopProfile'
 
 interface ResidencyProps{
   id: string
@@ -21,14 +22,21 @@ interface CityProps {
 }
 
 interface EditModal {
-  id: string
-  Artistpseudo: string,
-  instagram?: string,
+  shop:{
+    shop_name: string,
+    shop_id: string
+
+  },
+  artist?:{
+    id: string
+    pseudo: string,
+    insta: string,
+  }
   residency?: ResidencyProps
   city?: CityProps
 }
 
-export default function EditModale({id, Artistpseudo, instagram, residency, city}: EditModal){
+export default function EditModale({ artist, shop, residency, city}: EditModal){
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -37,7 +45,10 @@ export default function EditModale({id, Artistpseudo, instagram, residency, city
     router.push(`/artist/${slug}`)
 
   }
-  console.log(open)
+  const handlesuccessShop = (slug: string) => {
+    setOpen(false)
+    router.push(`${slug}`)
+  }
 
   return(
     <div className=" h-fit absolute left-100 -top-5">
@@ -52,7 +63,12 @@ export default function EditModale({id, Artistpseudo, instagram, residency, city
           <p className=" self-end" onClick={() => setOpen(false)}>
             x
           </p>
-          <ArtistProfile onSuccess={handleSuccessArtist}  id={id} Artistpseudo={Artistpseudo} instagram={instagram} residency={residency} city={city}/>
+          {artist &&
+            <ArtistProfile onSuccess={handleSuccessArtist}  artist={artist!} residency={residency} city={city}/>
+          }
+          {shop &&
+            <ShopProfil onSuccess={handlesuccessShop} shop={shop}/>
+          }
         </div>
       </div>
       }

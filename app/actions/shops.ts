@@ -12,6 +12,11 @@ type shopForm = {
   email: string
 }
 
+type editShop = {
+  shop_name: string,
+  shop_slug: string,
+  shop_id: string
+}
 
 export async function getShop(id:string){
   const supabase = await createClient()
@@ -41,6 +46,17 @@ export async function createShop(form: shopForm){
   const supabase = await createClient()
   const {data} = await supabase.from('shops').insert({shop_name: form.shop_name, shop_slug:form.shop_slug, shop_place_id: form.shop_place_id, city_id: form.city_id, owner_id: form.owner_id, owner_email: form.email}).select()
   return data?.[0] ?? null
+
+}
+
+
+
+
+export async function editShopName(form: editShop){
+  const supabase = await createClient()
+  const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug}).eq('id', form.shop_id)
+
+
 
 }
 

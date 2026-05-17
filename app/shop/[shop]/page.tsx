@@ -2,6 +2,7 @@ import {createClient} from '@/lib/supabase/server'
 import { getShopBySlug } from '@/app/actions/shops'
 import ArtistCard from '@/components/card/artistShopCard'
 import AddModale from '@/components/modale/AddModale'
+import EditModale from '@/components/modale/editModale'
 import DropDown from '@/components/dropdown/dataDropDown'
 import Link from 'next/link'
 import { formDate } from '@/app/utils/date'
@@ -35,7 +36,10 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const events = [...events_validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
   const residents = shop?.artists
   const  validated_residents = residents.filter((artist) => artist.status === "validated")
-  console.log("resident", validated_residents)
+  const shop_for_edit = {
+    shop_name: shopName,
+    shop_id: shop_id
+  }
 
   const is_connected = connected_user_id === shop_owner_id
 
@@ -45,7 +49,8 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
 
   return (
     <div className=" flex flex-col flex-1 gap-10" >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5 relative">
+        <EditModale shop={shop_for_edit}/>
         <div className='flex gap-2 items-center'>
           <House/>
           <h1 >{shopName}</h1>

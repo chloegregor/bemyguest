@@ -22,9 +22,11 @@ interface CityProps {
 
 interface ArtistProps {
   onSuccess :(slug: string) => void,
-  id: string
-  Artistpseudo: string,
-  instagram?: string,
+  artist: {
+    id: string
+    pseudo: string,
+    insta: string,
+  }
   residency?: ResidencyProps
   city?: CityProps
 }
@@ -45,7 +47,7 @@ interface handleEditArtistProps {
 
 
 
-export default function ArtistProfile({onSuccess, id, Artistpseudo, instagram, residency, city}: ArtistProps){
+export default function ArtistProfile({onSuccess, artist, residency, city}: ArtistProps){
   const [resident, setResident] = useState(residency?.shops?.shop_place_id ? true :  false)
   const [shopSlug, setShopSlug] = useState<string|null>(residency?.shops?.shop_slug ?? null)
   const [shopName, setShopName] = useState<string|null>(residency?.shops?.shop_name?? null)
@@ -79,7 +81,7 @@ export default function ArtistProfile({onSuccess, id, Artistpseudo, instagram, r
     const residency_id = residency?.id
 
     const form: handleEditArtistProps = {
-      id: id,
+      id: artist.id,
       pseudo: pseudo,
       pseudoSlug: new_pseudo_slug,
       resident: is_resident,
@@ -123,11 +125,11 @@ export default function ArtistProfile({onSuccess, id, Artistpseudo, instagram, r
       <div className='flex flex-col gap-5'>
         <div className="flex flex-col gap-2">
           <label htmlFor="pseudo">pseudo</label>
-          <input name="pseudo" defaultValue={Artistpseudo} type="text" className='border' required  />
+          <input name="pseudo" defaultValue={artist.pseudo} type="text" className='border' required  />
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="instagram">Instagram</label>
-          <input className='border' defaultValue={instagram} type="url" name="instagram" />
+          <input className='border' defaultValue={artist.insta} type="url" name="instagram" />
         </div>
         <div className="flex gap-5 ">
           <p>je suis résident.e dans un shop : </p>
@@ -170,7 +172,7 @@ export default function ArtistProfile({onSuccess, id, Artistpseudo, instagram, r
             present_data={cityName} />
           </div>
         }
-        <button type="submit" className=" w-fit border self-end">Enregistrer</button>
+        <button type="submit" className=" w-fit border self-end">Modifier</button>
         {error &&
           <p>{error}</p>
         }
