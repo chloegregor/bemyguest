@@ -10,6 +10,7 @@ import { MoveRight } from 'lucide-react';
 import { House } from 'lucide-react';
 import { MapPin } from 'lucide-react';
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 
 
 
@@ -25,6 +26,8 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const connected_user_id = user?.sub ? user.sub : null
   const shop = await getShopBySlug(shop_slug)
   const shop_owner_id = shop?.owner?.auth_id
+  const instagram = shop?.insta
+  console.log("insta", instagram)
   const shop_id = shop?.id
   const shopName = shop?.shop_name
   const city = shop?.cities.city_name
@@ -38,7 +41,8 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const  validated_residents = residents.filter((artist) => artist.status === "validated")
   const shop_for_edit = {
     shop_name: shopName,
-    shop_id: shop_id
+    shop_id: shop_id,
+    instagram: instagram
   }
 
   const is_connected = connected_user_id === shop_owner_id
@@ -49,11 +53,19 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
 
   return (
     <div className=" flex flex-col flex-1 gap-10" >
-      <div className="flex flex-col gap-5 relative">
-        <EditModale shop={shop_for_edit}/>
-        <div className='flex gap-2 items-center'>
-          <House/>
-          <h1 >{shopName}</h1>
+      <div className="flex flex-col gap-5 ">
+        <div className='flex gap-5 items-center w-fit relative '>
+          <div className= "flex gap-2 items-center">
+            <h1 >{shopName}</h1>
+          </div>
+          {instagram &&
+            <Link href={`${instagram}`} target='blank_'>
+              <Image src={'/img/instagram.png'} width={25} height={25}  alt='instagram'/>
+            </Link>
+          }
+          {is_connected &&
+            <EditModale shop={shop_for_edit}/>
+          }
         </div>
         <div className='flex gap-2 items-center' >
           <MapPin/>

@@ -25,7 +25,7 @@ interface ArtistProps {
   artist: {
     id: string
     pseudo: string,
-    insta: string,
+    insta: string | null,
   }
   residency?: ResidencyProps
   city?: CityProps
@@ -129,7 +129,7 @@ export default function ArtistProfile({onSuccess, artist, residency, city}: Arti
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="instagram">Instagram</label>
-          <input className='border' defaultValue={artist.insta} type="url" name="instagram" />
+          <input className='border' defaultValue={artist.insta ?? ""} type="url" name="instagram" />
         </div>
         <div className="flex gap-5 ">
           <p>je suis résident.e dans un shop : </p>

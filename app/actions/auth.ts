@@ -87,7 +87,7 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         role: data.role,
         pseudo: data.pseudo,
         pseudo_slug: data.role === "particulier" ? auth_id.slice(0, 7) : data.pseudoSlug,
-        insta : data.insta,
+        insta : data.role === "artist" ? data.insta : null,
       }
 
       const new_user = await CreateUser(user_data)
@@ -122,12 +122,15 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         if (!shop){
           return {error: "erreur lors de la récupération du shop"}
         }
-        const owner_id = new_user.id
-        const shop_id = shop.shop.id
-        const owner_email = new_user.email
+        const update_form = {
+          owner_id: new_user.id,
+          shop_id: shop.shop.id,
+          owner_email: new_user.email,
+          insta: data.insta
 
-        const updated_shop = await UpdateShop(shop_id, owner_id, owner_email)
-        console.log("le shop updated", updated_shop)
+        }
+
+        const updated_shop = await UpdateShop(update_form)
 
 
         if(!updated_shop){

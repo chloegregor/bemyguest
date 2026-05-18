@@ -22,15 +22,16 @@ interface CityProps {
 }
 
 interface EditModal {
-  shop:{
+  shop?:{
     shop_name: string,
     shop_id: string
+    instagram: string | null
 
   },
   artist?:{
     id: string
     pseudo: string,
-    insta: string,
+    insta: string | null,
   }
   residency?: ResidencyProps
   city?: CityProps
@@ -40,18 +41,15 @@ export default function EditModale({ artist, shop, residency, city}: EditModal){
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
-  const handleSuccessArtist = (slug:string) => {
-    setOpen(false)
-    router.push(`/artist/${slug}`)
-
-  }
-  const handlesuccessShop = (slug: string) => {
+  const handleSuccess = (slug:string) => {
     setOpen(false)
     router.push(`${slug}`)
+
   }
 
+
   return(
-    <div className=" h-fit absolute left-100 -top-5">
+    <div className=" h-fit absolute -right-20 -top-5">
       <button onClick={()=>setOpen(true)}>
         <div className="flex p-2 polygon">
           <Pencil/>
@@ -64,10 +62,10 @@ export default function EditModale({ artist, shop, residency, city}: EditModal){
             x
           </p>
           {artist &&
-            <ArtistProfile onSuccess={handleSuccessArtist}  artist={artist!} residency={residency} city={city}/>
+            <ArtistProfile onSuccess={handleSuccess}  artist={artist!} residency={residency} city={city}/>
           }
           {shop &&
-            <ShopProfil onSuccess={handlesuccessShop} shop={shop}/>
+            <ShopProfil onSuccess={handleSuccess} shop={shop}/>
           }
         </div>
       </div>

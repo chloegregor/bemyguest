@@ -16,6 +16,7 @@ type editShop = {
   shop_name: string,
   shop_slug: string,
   shop_id: string
+  instagram: string
 }
 
 export async function getShop(id:string){
@@ -33,7 +34,7 @@ export async function getShopSlugByOwner(id: string){
 export async function getShopBySlug(slug: string){
   const supabase = await createClient()
   const {data} = await supabase.from ('shops').select
-  ('*, owner:users!shops_owner_id_fkey (auth_id), guest_events(*, user_id(*)),  artists:residencies(status, users(pseudo, pseudo_slug)), cities(*)')
+  ('*, owner:users!shops_owner_id_fkey (auth_id, insta), guest_events(*, user_id(*)),  artists:residencies(status, users(pseudo, pseudo_slug)), cities(*)')
   .eq('shop_slug', slug)
 
   return data?.[0] ?? null
@@ -52,18 +53,18 @@ export async function createShop(form: shopForm){
 
 
 
-export async function editShopName(form: editShop){
+export async function editShop(form: editShop){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug}).eq('id', form.shop_id)
+  const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug, insta: form.instagram}).eq('id', form.shop_id)
 
 
 
 }
 
 
-export async function UpdateShop(id:string, owner_id:string, email:string){
+export async function UpdateShop(form: {owner_id: string; owner_email:string, insta:string | null, shop_id:string}){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').update({owner_id: owner_id, owner_email: email}).eq('id', id).select()
+  const {data} = await supabase.from('shops').update({owner_id: form.owner_id, owner_email: form.owner_email, insta: form.insta}).eq('id', form.shop_id).select()
   return data?.[0] ?? null
 }
 
