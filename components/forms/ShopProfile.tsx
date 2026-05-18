@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { editShop } from '@/app/actions/shops'
 
 import GooglePlace from '../searchForm/google/googlePlace'
@@ -13,13 +13,27 @@ interface ShopProps {
 }
 export default function ShopProfil({onSuccess, shop}: ShopProps){
   const [error, setError] = useState<string | null >(null)
+  const [shopName, setShopName] = useState(shop.shop_name)
+  const [instagram, setInstagram] = useState<string|null>(shop.instagram)
+  const [disabled, isDisabled] = useState(true)
+
+
+  useEffect(() => {
+    if (shopName != shop.shop_name || instagram != shop.instagram){
+      isDisabled(false)
+    }else{
+      isDisabled(true)
+    }
+
+  }, [shopName, instagram])
+
 
   async function handleSumbit(e: React.SubmitEvent<HTMLFormElement>){
      e.preventDefault()
          const form = new FormData(e.currentTarget)
 
     const shopName = form.get('shop_name') as string
-    const instagram = form.get('insta') as string
+
 
     const editShopform = {
       shop_name : shopName,
@@ -41,14 +55,14 @@ export default function ShopProfil({onSuccess, shop}: ShopProps){
       <form onSubmit={handleSumbit} className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           <p>Nom du shop</p>
-          <input name="shop_name" type="text" defaultValue={shop.shop_name} required className="border"/>
+          <input name="shop_name" type="text" defaultValue={shop.shop_name} required className="border" onChange={(e) => setShopName(e.target.value)}/>
         </div>
         <div className="flex flex-col gap-2">
           <p>Instagram</p>
-          <input name='insta' type="url" defaultValue={shop.instagram ?? ""} className="border"/>
+          <input name='insta' type="url" defaultValue={shop.instagram ?? ""} className="border" onChange={(e) => setInstagram(e.target.value)} />
         </div>
         <div className='flex justify-end'>
-          <button type="submit" className="border">Modifier</button>
+          <button disabled={disabled} type="submit" className={`border ${disabled ? "text-gray-500"  : ""}`}>Modifier</button>
         </div>
       </form>
       {error &&

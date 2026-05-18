@@ -148,12 +148,12 @@ export default function DropDown({data_props, shop_id, user_id, slug, type }: dr
                     <MoveRight size={16}/>
                     <p>{formDate(event.end_date)}</p>
                   </div>
-                  { event.status === 'validated' ?
+
 
                     <Link href={`/${user_id ? 'shop' : shop_id ? 'artist': ""}/${event.user_id?.pseudo_slug ?? event.shop_id?.shop_slug}`}><p  className="">{`${event.user_id?.pseudo ?? event.shop_id?.shop_name}`}</p></Link>
-                    : <p  className="">{`${event.user_id?.pseudo ?? event.shop_id?.shop_name ?? ""}`}</p>
+                    
 
-                  }
+
 
                 </div>
 

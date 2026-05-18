@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { SingUpData } from '@/types'
 import { retrieveShop, UpdateShop } from './shops'
 import { retrieveCity } from './cites'
-import { CreateUser } from './users'
+import { CreateUser, findUser, UpsertUser } from './users'
 import { CreateResidency } from './residencies'
 
 
@@ -46,13 +46,11 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
     }
 
     if (data.role === "artist" && data.resident && data.shopSlug && data.shopName && data.shopPlaceId) {
-      console.log("owner email", data.owner_email)
       const result = await retrieveShop(data.shopSlug, data.shopPlaceId, data.shopName, data.owner_email)
       if (!result){
         return  {error: 'erreur a la récupération du shop'}
       }
       if (result.error){
-        console.log("une erreur oui")
         return {error:result.error}
 
       }
@@ -88,9 +86,9 @@ export async function SingUp(data: SingUpData): Promise<{error?: string, redirec
         pseudo: data.pseudo,
         pseudo_slug: data.role === "particulier" ? auth_id.slice(0, 7) : data.pseudoSlug,
         insta : data.role === "artist" ? data.insta : null,
+        status: "validated"
       }
-
-      const new_user = await CreateUser(user_data)
+      const new_user = await UpsertUser(user_data)
       if (!new_user) {
 
         return {error: "erreur lors de la creation du profil"}

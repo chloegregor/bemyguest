@@ -16,7 +16,7 @@ type editShop = {
   shop_name: string,
   shop_slug: string,
   shop_id: string
-  instagram: string
+  instagram: string| null
 }
 
 export async function getShop(id:string){

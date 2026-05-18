@@ -46,10 +46,16 @@ interface handleEditArtistProps {
 
 export async function CreateUser(form:FormProps){
   const supabase = await createClient()
-  const {data, } = await supabase.from('users').insert(form).select()
+  const {data } = await supabase.from('users').insert(form).select()
   return data?.[0] ?? null
 }
 
+export async function UpsertUser(form:FormProps){
+  const supabase = await createClient()
+  const {data, error} = await supabase.from('users').upsert(form, {onConflict:'email'}).select().single()
+  return data ?? error
+
+}
 
 export async function GetUser(auth_id: string){
   const supabase = await createClient()

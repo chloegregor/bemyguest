@@ -33,7 +33,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const events = [...validated, ...not_confirmed].sort((a,b) => new Date(a.start_date) - new Date(b.start_date))
   const artist_for_edit_form = {
     id: artist_id,
-    insta: artist_data.instagram,
+    insta: instagram,
     pseudo: pseudo
   }
 

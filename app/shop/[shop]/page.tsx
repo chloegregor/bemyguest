@@ -27,7 +27,6 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const shop = await getShopBySlug(shop_slug)
   const shop_owner_id = shop?.owner?.auth_id
   const instagram = shop?.insta
-  console.log("insta", instagram)
   const shop_id = shop?.id
   const shopName = shop?.shop_name
   const city = shop?.cities.city_name
