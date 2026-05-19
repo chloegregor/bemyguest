@@ -60,7 +60,7 @@ async function getNearByData(city: CityType, radius: string){
   const [g, s, a] = await Promise.all([
     supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))').in('city_id', cityIds).eq('status', 'validated'),
     supabase.from('shops').select('*, cities(*)').in('city_id', cityIds),
-    supabase.from('users').select('*, residencies(*, shops(*), cities(*)), cities(*), user_style(*, styles(*)), shop:shop_id(*)').eq('role', 'artist').in('residencies.city_id', cityIds)
+    supabase.from('users').select('*, residencies!inner(*, shops(*), cities(*)), user_style(*, styles(*))').eq('role', 'artist').in('residencies.city_id', cityIds)
   ])
 
   return {
