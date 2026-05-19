@@ -22,6 +22,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const artist_data = await GetUserBySlug(artist)
   const artist_auth_id = artist_data?.auth_id
   const artist_id = artist_data?.id
+  const avatar = artist_data?.avatar
   const instagram = artist_data?.insta
   const is_connected = connected_user_id === artist_auth_id
   const pseudo = artist_data?.pseudo
@@ -34,7 +35,8 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   const artist_for_edit_form = {
     id: artist_id,
     insta: instagram,
-    pseudo: pseudo
+    pseudo: pseudo,
+    avatar: avatar
   }
 
   if(!artist_data){
@@ -44,16 +46,23 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
 
   return (
     <div className="flex flex-col flex-1 gap-5">
-      <div className=" flex flex-col gap-5 relative ">
-        {is_connected &&
-          <EditModale artist={artist_for_edit_form} residency={residency} city={city}/>
-        }
-        <h1>{pseudo}</h1>
-        <div>
-          {residency.shops &&
-            <Link href={`/shop/${residency.shops?.shop_slug}`} className='flex gap-2 items-center'><House/><h2>{residency.shops?.shop_name}</h2></Link>
+      <div className="flex gap-10">
+         {avatar &&
+            <div className=" w-[150px] relative aspect-square rounded-full overflow-hidden border-2 border-black">
+              <Image src={avatar} alt='avatar' fill className="object-cover" unoptimized  ></Image>
+            </div>
           }
-          <Link href={`/${city.country_slug}/${residency.cities.city_slug}`} className='flex gap-2 items-center'><MapPin/><h2>{residency.cities.city_name}</h2></Link>
+        <div className=" flex flex-col gap-5 relative w-fit">
+          {is_connected &&
+            <EditModale artist={artist_for_edit_form} residency={residency} city={city}/>
+          }
+          <h1>{pseudo}</h1>
+          <div>
+            {residency.shops &&
+              <Link href={`/shop/${residency.shops?.shop_slug}`} className='flex gap-2 items-center'><House/><h2>{residency.shops?.shop_name}</h2></Link>
+            }
+            <Link href={`/${city.country_slug}/${residency.cities.city_slug}`} className='flex gap-2 items-center'><MapPin/><h2>{residency.cities.city_name}</h2></Link>
+          </div>
         </div>
       </div>
       <div className=" flex-1 flex gap-10 ">

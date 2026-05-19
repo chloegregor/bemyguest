@@ -58,10 +58,7 @@ export async function editShop(form: editShop){
   const supabase = await createClient()
   const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug, insta: form.instagram, avatar:form.avatar}).eq('id', form.shop_id)
 
-
-
 }
-
 
 export async function UpdateShop(form: {owner_id: string; owner_email:string, insta:string | null, shop_id:string}){
   const supabase = await createClient()

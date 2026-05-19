@@ -25,6 +25,7 @@ interface FormEditArtistProps {
   pseudo: string
   insta?: string
   pseudo_slug: string
+  avatar: string |null
 
 
 }
@@ -32,6 +33,7 @@ interface FormEditArtistProps {
 interface handleEditArtistProps {
   id:string
   pseudo: string,
+  avatar: string | null
   resident: boolean
   residency_id?: string
   instagram?: string
@@ -129,6 +131,7 @@ export async function handleArtistForm(data : handleEditArtistProps){
         pseudo: data.pseudo,
         pseudo_slug: data.pseudoSlug,
         insta : data.instagram,
+        avatar: data.avatar
       }
 
       const updated_user = await EditArtist(user_data)

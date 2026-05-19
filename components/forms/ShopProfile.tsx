@@ -39,21 +39,24 @@ export default function ShopProfil({onSuccess, shop}: ShopProps){
     e.preventDefault()
     const form = new FormData(e.currentTarget)
     const shopName = form.get('shop_name') as string
-    const avatar = form.get('avatar') as File
-    const filepath = `avatar/${shop.shop_id}`
-    console.log(avatar)
-    const {data, error} = await supabase.storage.from('images').upload(filepath, avatar, {upsert: true})
-    if (error){
-      setError("Erreur pendant le telechargement de l'image")
-    }
-    if (!data){
-      setError("Erreur pendant le telechargement de l'image")
-      return
-    }
-    const {data: publicUrl} =  supabase.storage.from('images').getPublicUrl(filepath)
-    if (!publicUrl){
-      setError("Une erreur s'est produite pendant le telechargment de l'image")
-      return
+    const avatar_url = avatar
+    let url = shop.avatar
+    if (avatar_url){
+      const filepath = `avatar/${shop.shop_id}`
+       const {data, error} = await supabase.storage.from('images').upload(filepath, avatar, {upsert: true})
+      if (error){
+        setError("Erreur pendant le telechargement de l'image")
+      }
+      if (!data){
+        setError("Erreur pendant le telechargement de l'image")
+        return
+      }
+      const {data: publicUrl} =  supabase.storage.from('images').getPublicUrl(filepath)
+      if (!publicUrl){
+        setError("Une erreur s'est produite pendant le telechargment de l'image")
+        return
+      }
+      url = `${publicUrl.publicUrl}?t=${Date.now()}`
     }
 
     const editShopform = {
@@ -61,7 +64,7 @@ export default function ShopProfil({onSuccess, shop}: ShopProps){
       shop_slug: shopName.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-'),
       shop_id : shop.shop_id,
       instagram: instagram,
-      avatar:`${publicUrl.publicUrl}?t=${Date.now()}`
+      avatar: url
     }
 
     try{
@@ -83,7 +86,6 @@ export default function ShopProfil({onSuccess, shop}: ShopProps){
         <div className="flex flex-col gap-2">
           <p>Instagram</p>
           <input name='insta' type="url" defaultValue={shop.instagram ?? ""} className="border" onChange={(e) => setInstagram(e.target.value)} />
-          <p>{avatar?.name}</p>
         </div>
         <div className="flex flex-col gap-2">
           <p>Avatar</p>
@@ -96,7 +98,7 @@ export default function ShopProfil({onSuccess, shop}: ShopProps){
           }
           <label htmlFor="avatar" className='border p-1 w-fit'>Browse...</label>
           <input id='avatar' name='avatar' type="file" className='hidden' accept="image/png, image/jpeg" onChange={(e) => setAvatar(e.target.files?.[0])} />
-          <p>{avatar?.name}</p>
+          <p className="break-all">{avatar?.name}</p>
         </div>
         <div className='flex justify-end'>
           <button disabled={disabled} type="submit" className={`border ${disabled ? "text-gray-500"  : ""}`}>Modifier</button>

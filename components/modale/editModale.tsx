@@ -33,9 +33,10 @@ interface EditModal {
     id: string
     pseudo: string,
     insta: string | null,
+    avatar: string |null
   }
-  residency?: ResidencyProps
-  city?: CityProps
+  residency: ResidencyProps
+  city: CityProps
 }
 
 export default function EditModale({ artist, shop, residency, city}: EditModal){
