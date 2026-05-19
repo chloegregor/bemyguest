@@ -7,7 +7,6 @@ import DropDown from '@/components/dropdown/dataDropDown'
 import Link from 'next/link'
 import { formDate } from '@/app/utils/date'
 import { MoveRight } from 'lucide-react';
-import { House } from 'lucide-react';
 import { MapPin } from 'lucide-react';
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
@@ -26,8 +25,10 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const connected_user_id = user?.sub ? user.sub : null
   const shop = await getShopBySlug(shop_slug)
   const shop_owner_id = shop?.owner?.auth_id
-  const instagram = shop?.insta
   const shop_id = shop?.id
+  const instagram = shop?.insta
+  const avatar = shop?.avatar
+  console.log("avatar", avatar)
   const shopName = shop?.shop_name
   const city = shop?.cities.city_name
   const city_slug = shop?.cities.city_slug
@@ -41,7 +42,8 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
   const shop_for_edit = {
     shop_name: shopName,
     shop_id: shop_id,
-    instagram: instagram
+    instagram: instagram,
+    avatar: avatar
   }
 
   const is_connected = connected_user_id === shop_owner_id
@@ -52,24 +54,31 @@ export default async function Artist({ params }: { params: Promise<{ shop: strin
 
   return (
     <div className=" flex flex-col flex-1 gap-10" >
-      <div className="flex flex-col gap-5 ">
-        <div className='flex gap-5 items-center w-fit relative '>
-          <div className= "flex gap-2 items-center">
-            <h1 >{shopName}</h1>
+      <div className='flex gap-10 items-center'>
+        {avatar &&
+          <div className=" w-[150px] relative aspect-square rounded-full overflow-hidden border-2 border-black">
+            <Image src={avatar} alt='avatar' fill className="object-cover" unoptimized  ></Image>
           </div>
-          {instagram &&
-            <Link href={`${instagram}`} target='blank_'>
-              <Image src={'/img/instagram.png'} width={25} height={25}  alt='instagram'/>
-            </Link>
-          }
-          {is_connected &&
-            <EditModale shop={shop_for_edit}/>
-          }
+        }
+        <div className="flex flex-col gap-5 ">
+          <div className='flex gap-5 items-center w-fit relative '>
+            <div className= "flex gap-2 items-center">
+              <h1 >{shopName}</h1>
+            </div>
+            {instagram &&
+              <Link href={`${instagram}`} target='blank_'>
+                <Image src={'/img/instagram.png'} width={25} height={25}  alt='instagram'/>
+              </Link>
+            }
+            {is_connected &&
+              <EditModale shop={shop_for_edit}/>
+            }
+          </div>
+          <div className='flex gap-2 items-center' >
+            <MapPin/>
+            <Link href={`/${country_slug}/${city_slug}`}><h2>{city}</h2></Link>
+          </div >
         </div>
-        <div className='flex gap-2 items-center' >
-          <MapPin/>
-          <Link href={`/${country_slug}/${city_slug}`}><h2>{city}</h2></Link>
-        </div >
       </div>
       <div className=" flex-1 flex flex-row gap-10 ">
 

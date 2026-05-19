@@ -17,7 +17,7 @@ async function getGuests(page: number, city_id?: number){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from ('guest_events').select(`*, users(pseudo, pseudo_slug, insta, user_style(style_id, styles(name))),shops(*), cities(*)`, {count: "exact"}).gte('end_date', today).range(from, to)
+  const {data, count} = await supabase.from ('guest_events').select(`*, users(pseudo, pseudo_slug, insta, user_style(style_id, styles(name))),shops(*), cities(*)`, {count: "exact"}).eq('status', 'validated').gte('end_date', today).range(from, to)
     return {data: data, count:count}
 }
 

@@ -17,6 +17,7 @@ type editShop = {
   shop_slug: string,
   shop_id: string
   instagram: string| null
+  avatar: string | null
 }
 
 export async function getShop(id:string){
@@ -55,7 +56,7 @@ export async function createShop(form: shopForm){
 
 export async function editShop(form: editShop){
   const supabase = await createClient()
-  const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug, insta: form.instagram}).eq('id', form.shop_id)
+  const {data} = await supabase.from('shops').update({shop_name: form.shop_name, shop_slug: form.shop_slug, insta: form.instagram, avatar:form.avatar}).eq('id', form.shop_id)
 
 
 

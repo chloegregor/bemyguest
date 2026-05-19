@@ -17,7 +17,7 @@ export default function GuestCard({event}: { event: Event }) {
   const artist = event.users
   return(
     <div className="flex flex-col gap-2  h-full w-[250px] items-center">
-      <div><Link href={`/artist/${artist.pseudo_slug}`}>{artist.pseudo}</Link></div>
+      <div><Link href={`/artist/${artist?.pseudo_slug}`}>{artist?.pseudo}</Link></div>
       <div className='flex gap-2 items-center '>
         <p className="text-[0.8em]">{debut}</p>
         <MoveRight/>
@@ -25,7 +25,7 @@ export default function GuestCard({event}: { event: Event }) {
       </div>
       <div className="relative aspect-square w-[200px] ">
         <Image src="https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"
-        alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
+        alt={`illustration ${artist?.pseudo}`} fill className="object-fill"/>
       </div>
 
       <div className="flex flex-col w-[200px] ">

@@ -26,6 +26,7 @@ interface EditModal {
     shop_name: string,
     shop_id: string
     instagram: string | null
+    avatar: string | null
 
   },
   artist?:{
