@@ -15,6 +15,7 @@ export default function GuestCard({event}: { event: Event }) {
   const country= event.cities?.country_name
   const country_slug =event.cities?.country_slug
   const artist = event.users
+  const avatar = artist?.avatar
   return(
     <div className="flex flex-col gap-2  h-full w-[250px] items-center">
       <div><Link href={`/artist/${artist?.pseudo_slug}`}>{artist?.pseudo}</Link></div>
@@ -23,9 +24,9 @@ export default function GuestCard({event}: { event: Event }) {
         <MoveRight/>
         <p className="text-[0.8em]">{fin}</p>
       </div>
-      <div className="relative aspect-square w-[200px] ">
-        <Image src="https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"
-        alt={`illustration ${artist?.pseudo}`} fill className="object-fill"/>
+      <div className="relative aspect-square w-[200px] rounded-full border border-black overflow-hidden ">
+        <Image src={avatar ? avatar : '/img/placeholder.jpg'}
+        alt={`illustration ${artist?.pseudo}`} fill className="object-cover"/>
       </div>
 
       <div className="flex flex-col w-[200px] ">

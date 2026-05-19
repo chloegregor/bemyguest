@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 export default function ArtistCard({artist}) {
   const styles = artist.user_style?.map((style) => style.styles?.name)
+  const avatar = artist.avatar
   const city = artist.residencies?.[0]?.cities
   const shop = artist.residencies?.[0]?.shops
   const cityname = city?.city_name
@@ -14,11 +15,9 @@ export default function ArtistCard({artist}) {
   return(
     <div className="flex flex-col gap-2 w-[250px] h-full  ">
       <div className="text-center"><Link href={`/artist/${artist.pseudo_slug}`}>{artist.pseudo}</Link></div>
-      <div className='flex gap-2'>
-      </div>
-      <div className="relative aspect-square w-[200px] self-center  ">
-        <Image src="https://kuqyxgjizzysthhyfoep.supabase.co/storage/v1/object/public/images/552488704_18074237399130072_8672640192344154212_n.jpg"
-        alt={`illustration ${artist.pseudo}`} fill className="object-fill"/>
+      <div className="relative aspect-square w-[200px] self-center border border-black rounded-full overflow-hidden ">
+        <Image src={avatar ? avatar : "/img/placeholder.jpg"}
+        alt={`illustration ${artist.pseudo}`} fill className="object-cover"/>
       </div>
       <div className="  w-[200px] self-center ">
         <Link href={`/${country_slug}/${city_slug}`}><p className="text-[0.8em]">{cityname},{" "}{country}</p></Link>

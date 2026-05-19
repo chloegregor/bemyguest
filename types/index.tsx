@@ -7,6 +7,7 @@ export type Event = {
     pseudo: string
     pseudo_slug: string
     insta: string
+    avatar: string | null
     user_style: {
       style_id: string
       styles: { name: string }

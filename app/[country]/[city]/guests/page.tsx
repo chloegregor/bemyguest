@@ -3,6 +3,7 @@ import List from '@/components/lists/List'
 import RadiusButton from '@/components/radius/button'
 import NavBar from '@/components/nav/navBar'
 import GetMore from '@/components/lists/getMore'
+import { equal } from 'assert'
 
 
 interface CityType {
@@ -22,7 +23,7 @@ async function getData(page: number, city_id: number){
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))', {count: 'exact'}).eq('city_id', city_id).range(from, to)
+  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*,user_style(*, styles(*)))', {count: 'exact'}).eq('city_id', city_id).eq('status', 'validated').range(from, to)
   return {data: data, count:count}
 }
 
@@ -48,7 +49,7 @@ async function getNearByData(page: number, city: CityType, radius: string){
 
   const cityIds = nearbyCities?.map(c => c.id) || []
 
-  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))', {count: 'exact'}).in('city_id', cityIds).range(from, to)
+  const {data, count} = await supabase.from('guest_events').select('*, cities(*), shops(*), users(*, user_style(*, styles(*)))', {count: 'exact'}).in('city_id', cityIds).eq('status', 'validated').range(from, to)
   return {data: data, count:count}
 }
 
